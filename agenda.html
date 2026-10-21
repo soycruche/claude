@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda de actividades</title>
+<style>
+  :root {
+    --terracota: #b5542c;
+    --terracota-dark: #8f4122;
+    --verde: #4f6b4a;
+    --crema: #faf4ec;
+    --papel: #fffdf9;
+    --texto: #2c241c;
+    --texto-suave: #6b5f52;
+    --borde: #e5d9c8;
+    --pendiente-bg: #fff3df;
+    --pendiente-borde: #e4b566;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--crema);
+    color: var(--texto);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .agenda {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 16px 64px;
+  }
+
+  .agenda__header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .agenda__header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    margin: 0 0 6px;
+    color: var(--terracota-dark);
+  }
+
+  .agenda__header p {
+    margin: 0;
+    color: var(--texto-suave);
+  }
+
+  /* ---- Categoría (nivel 1) ---- */
+  .categoria {
+    background: var(--papel);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+
+  .categoria > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--terracota-dark);
+  }
+
+  .categoria > summary::-webkit-details-marker { display: none; }
+
+  .categoria__titulo-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .categoria__nota {
+    font-weight: 400;
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+  }
+
+  .categoria__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .categoria__count {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--verde);
+    background: #eaf0e7;
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  .categoria__chevron {
+    width: 11px;
+    height: 11px;
+    border-right: 2px solid var(--terracota);
+    border-bottom: 2px solid var(--terracota);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .categoria[open] > summary .categoria__chevron {
+    transform: rotate(-135deg);
+  }
+
+  .categoria__body {
+    padding: 4px 20px 18px;
+    border-top: 1px solid var(--borde);
+  }
+
+  .categoria__vacio {
+    color: var(--texto-suave);
+    font-style: italic;
+    padding: 14px 0 6px;
+  }
+
+  /* ---- Grupo / punto geográfico ---- */
+  .grupo {
+    margin-top: 18px;
+  }
+
+  .grupo__titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--verde);
+    margin: 0 0 2px;
+  }
+
+  .grupo__subtitulo {
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+    margin: 0 0 10px;
+  }
+
+  /* ---- Actividad (nivel 2) ---- */
+  .actividad {
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #fff;
+  }
+
+  .actividad > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 11px 14px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .actividad > summary::-webkit-details-marker { display: none; }
+
+  .actividad > summary::before {
+    content: "+";
+    font-weight: 700;
+    color: var(--terracota);
+    margin-right: 2px;
+  }
+
+  .actividad[open] > summary::before {
+    content: "–";
+  }
+
+  .actividad__horario {
+    font-weight: 400;
+    font-size: 0.82rem;
+    color: var(--texto-suave);
+  }
+
+  .actividad__body {
+    padding: 0 14px 14px 30px;
+    font-size: 0.92rem;
+  }
+
+  .actividad__campo {
+    margin: 6px 0;
+  }
+
+  .actividad__campo strong {
+    color: var(--texto);
+  }
+
+  .actividad__descripcion p {
+    margin: 6px 0;
+  }
+
+  .actividad__redes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+  }
+
+  .actividad__redes a {
+    color: var(--terracota-dark);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .actividad__redes a:hover { text-decoration: underline; }
+
+  .actividad__pendientes {
+    margin-top: 10px;
+    background: var(--pendiente-bg);
+    border: 1px solid var(--pendiente-borde);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+
+  .actividad__pendientes div {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .actividad__pendientes ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+</style>
+</head>
+<body>
+
+<section class="agenda" id="agenda">
+  <header class="agenda__header">
+    <h1>Agenda de actividades</h1>
+    <p>Tocá cada categoría y cada actividad para ver el detalle.</p>
+  </header>
+  <div id="agenda-contenido"></div>
+</section>
+
+<script src="agenda-data.js"></script>
+<script>
+(function () {
+  const contenedor = document.getElementById("agenda-contenido");
+
+  function el(tag, props = {}, children = []) {
+    const node = document.createElement(tag);
+    Object.entries(props).forEach(([k, v]) => {
+      if (k === "class") node.className = v;
+      else if (k === "text") node.textContent = v;
+      else node.setAttribute(k, v);
+    });
+    children.forEach((c) => c && node.appendChild(c));
+    return node;
+  }
+
+  function normalizarHandle(handle) {
+    return handle.replace(/^@/, "");
+  }
+
+  function renderRedes(redes) {
+    if (!redes || !redes.length) return null;
+    const wrap = el("div", { class: "actividad__redes" });
+    redes.forEach((r) => {
+      const a = el("a", {
+        href: "https://instagram.com/" + normalizarHandle(r),
+        target: "_blank",
+        rel: "noopener noreferrer",
+        text: r.startsWith("@") ? r : "@" + r,
+      });
+      wrap.appendChild(a);
+    });
+    return wrap;
+  }
+
+  function renderDescripcion(desc) {
+    if (!desc) return null;
+    const wrap = el("div", { class: "actividad__descripcion" });
+    const parrafos = Array.isArray(desc) ? desc : [desc];
+    parrafos.forEach((p) => wrap.appendChild(el("p", { text: p })));
+    return wrap;
+  }
+
+  function renderPendientes(pendientes) {
+    if (!pendientes || !pendientes.length) return null;
+    const wrap = el("div", { class: "actividad__pendientes" });
+    wrap.appendChild(el("div", { text: "⚠ Pendiente de definir" }));
+    const ul = el("ul");
+    pendientes.forEach((p) => ul.appendChild(el("li", { text: p })));
+    wrap.appendChild(ul);
+    return wrap;
+  }
+
+  function renderActividad(act) {
+    const details = el("details", { class: "actividad" });
+    const summaryChildren = [el("span", { text: act.titulo || "Sin título" })];
+    if (act.horario) {
+      summaryChildren.push(el("span", { class: "actividad__horario", text: act.horario }));
+    }
+    details.appendChild(el("summary", {}, summaryChildren));
+
+    const body = el("div", { class: "actividad__body" });
+    if (act.lugar) {
+      body.appendChild(el("div", { class: "actividad__campo" },
+        [el("strong", { text: "Lugar: " }), document.createTextNode(act.lugar)]));
+    }
+    if (act.inscripcion) {
+      body.appendChild(el("div", { class: "actividad__campo" },
+        [el("strong", { text: "Inscripción: " }), document.createTextNode(act.inscripcion)]));
+    }
+    const desc = renderDescripcion(act.descripcion);
+    if (desc) body.appendChild(desc);
+    const redes = renderRedes(act.redes);
+    if (redes) body.appendChild(redes);
+    const pend = renderPendientes(act.pendientes);
+    if (pend) body.appendChild(pend);
+
+    details.appendChild(body);
+    return details;
+  }
+
+  function renderGrupo(grupo) {
+    const wrap = el("div", { class: "grupo" });
+    wrap.appendChild(el("p", { class: "grupo__titulo", text: grupo.titulo || "" }));
+    if (grupo.subtitulo) {
+      wrap.appendChild(el("p", { class: "grupo__subtitulo", text: grupo.subtitulo }));
+    }
+    (grupo.actividades || []).forEach((act) => wrap.appendChild(renderActividad(act)));
+    return wrap;
+  }
+
+  function contarActividades(categoria) {
+    if (categoria.grupos) {
+      return categoria.grupos.reduce((n, g) => n + (g.actividades || []).length, 0);
+    }
+    return (categoria.actividades || []).length;
+  }
+
+  function renderCategoria(categoria) {
+    const details = el("details", { class: "categoria" });
+    const total = contarActividades(categoria);
+
+    const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
+      el("span", { text: categoria.nombre }),
+      categoria.nota ? el("span", { class: "categoria__nota", text: categoria.nota }) : null,
+    ]);
+
+    const meta = el("span", { class: "categoria__meta" }, [
+      el("span", {
+        class: "categoria__count",
+        text: total === 1 ? "1 actividad" : total + " actividades",
+      }),
+      el("span", { class: "categoria__chevron" }),
+    ]);
+
+    details.appendChild(el("summary", {}, [tituloWrap, meta]));
+
+    const body = el("div", { class: "categoria__body" });
+    if (total === 0) {
+      body.appendChild(el("p", {
+        class: "categoria__vacio",
+        text: "Próximamente. Sumá las actividades en agenda-data.js.",
+      }));
+    } else if (categoria.grupos) {
+      categoria.grupos.forEach((g) => body.appendChild(renderGrupo(g)));
+    } else {
+      categoria.actividades.forEach((a) => body.appendChild(renderActividad(a)));
+    }
+    details.appendChild(body);
+    return details;
+  }
+
+  (typeof AGENDA_DATA !== "undefined" ? AGENDA_DATA : []).forEach((categoria) => {
+    contenedor.appendChild(renderCategoria(categoria));
+  });
+})();
+</script>
+
+</body>
+</html>

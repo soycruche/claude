@@ -8,18 +8,25 @@
   {
     nombre: "Nombre de la categoría",
     nota: "Aclaración opcional (se muestra chica al lado del nombre)",
-
-    // Opción A: actividades sueltas (sin agrupar por lugar)
-    actividades: [ {...}, {...} ],
-
-    // Opción B: actividades agrupadas por espacio/punto (como Visitas guiadas)
-    grupos: [
-      { titulo: "#1 NOMBRE DEL LUGAR", subtitulo: "Dirección / IG", actividades: [ {...} ] }
-    ]
+    items: [ {...}, {...} ]
   }
 
-  Estructura de cada ACTIVIDAD (todos los campos son opcionales, se puede
-  borrar o dejar vacío "" el que no corresponda):
+  Cada CATEGORÍA se abre con un click y muestra su lista de "items"
+  (por ejemplo, en Visitas Guiadas los items son #1, #2 y #3).
+
+  Estructura de cada ITEM (el que tiene el "+"):
+  {
+    titulo: "#1 ESPACIO CENTRAL: TERMINAL 39",
+    subtitulo: "Dirección / IG del lugar (opcional)",
+    actividades: [ {...}, {...} ]   // una o varias actividades
+  }
+
+  Al abrir un item con "+" se muestra TODA la info de sus actividades
+  junta (no hace falta un click extra por actividad).
+
+  Estructura de cada ACTIVIDAD dentro de "actividades" (todos los
+  campos son opcionales, se puede borrar o dejar vacío "" el que no
+  corresponda):
   {
     titulo: "Nombre de la actividad",
     horario: "18.00 hs.",
@@ -34,7 +41,7 @@
 const AGENDA_DATA = [
   {
     nombre: "Visitas guiadas, Caminatas y recorridos",
-    grupos: [
+    items: [
       {
         titulo: "#1 ESPACIO CENTRAL: TERMINAL 39",
         subtitulo: "Av. Jorge Newbery 3943 · @linea_39",
@@ -154,42 +161,42 @@ const AGENDA_DATA = [
   },
   {
     nombre: "Diseño y Decoración",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Infancias",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Arte y Cultura",
     nota: "librerías, artistas",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Música",
     nota: "incluir a Casa de Canto como protagonista",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Recreación",
     nota: "yoga, talleres, arreglo de bici",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Teatros",
     nota: "según lo que diga Germán",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Chaca y Vino",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Espacios Gastronómicos",
-    actividades: [],
+    items: [],
   },
   {
     nombre: "Cafés",
-    actividades: [],
+    items: [],
   },
 ];

@@ -76,16 +76,6 @@
     return wrap;
   }
 
-  function renderPendientes(pendientes) {
-    if (!pendientes || !pendientes.length) return null;
-    const wrap = el("div", { class: "actividad__pendientes" });
-    wrap.appendChild(el("div", { text: "⚠ Pendiente de definir" }));
-    const ul = el("ul");
-    pendientes.forEach((p) => ul.appendChild(el("li", { text: p })));
-    wrap.appendChild(ul);
-    return wrap;
-  }
-
   function renderCampos(obj, incluirTitulo) {
     const wrap = el("div", { class: "actividad" });
     if (incluirTitulo && obj.titulo) {
@@ -107,8 +97,6 @@
     if (desc) wrap.appendChild(desc);
     const redes = renderRedes(obj.redes);
     if (redes) wrap.appendChild(redes);
-    const pend = renderPendientes(obj.pendientes);
-    if (pend) wrap.appendChild(pend);
     return wrap;
   }
 
@@ -141,14 +129,9 @@
 
     const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
       el("span", { text: categoria.nombre }),
-      categoria.nota ? el("span", { class: "categoria__nota", text: categoria.nota }) : null,
     ]);
 
     const meta = el("span", { class: "categoria__meta" }, [
-      el("span", {
-        class: "categoria__count",
-        text: total === 1 ? "1 actividad" : total + " actividades",
-      }),
       el("span", { class: "categoria__chevron" }),
     ]);
 

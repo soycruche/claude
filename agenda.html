@@ -19,10 +19,17 @@
   <div id="agenda-contenido"></div>
 </section>
 
-<script src="agenda-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
 (function () {
   const contenedor = document.getElementById("agenda-contenido");
+
+  // La agenda se edita en esta planilla de Google Sheets (una fila por
+  // actividad). La página la lee cada vez que se abre, así que un cambio
+  // en la planilla se ve en la web sin tocar ningún archivo.
+  // Planilla: https://docs.google.com/spreadsheets/d/1oLdtQzdmme7pPJ-NBG_-6BhbpjC6SOH_eI6HRoOpJtk/edit
+  const SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/1oLdtQzdmme7pPJ-NBG_-6BhbpjC6SOH_eI6HRoOpJtk/export?format=csv&gid=0";
 
   // Un color distinto por categoría, dentro de la misma paleta/tonalidad.
   const CATEGORY_COLORS = [
@@ -122,6 +129,63 @@
     return (categoria.items || []).length;
   }
 
+  // Convierte las filas planas de la planilla (una fila por actividad) en
+  // la misma forma que usa el resto del código: categorías con items, y
+  // cada item con sus actividades (o sus campos directos si es uno solo).
+  function agruparFilas(filas) {
+    const categorias = [];
+    const indiceCategorias = new Map();
+    const indiceItems = new Map();
+
+    filas.forEach((fila) => {
+      const nombreCategoria = (fila.categoria || "").trim();
+      if (!nombreCategoria) return;
+
+      let categoria = indiceCategorias.get(nombreCategoria);
+      if (!categoria) {
+        categoria = { nombre: nombreCategoria, items: [] };
+        indiceCategorias.set(nombreCategoria, categoria);
+        categorias.push(categoria);
+      }
+
+      const tituloItem = (fila.item || "").trim();
+      const claveItem = nombreCategoria + "|" + tituloItem;
+      let item = indiceItems.get(claveItem);
+      if (!item) {
+        const subtitulo = (fila.item_subtitulo || "").trim();
+        item = { titulo: tituloItem, subtitulo: subtitulo || undefined, _actividades: [] };
+        indiceItems.set(claveItem, item);
+        categoria.items.push(item);
+      }
+
+      const descripcionTexto = (fila.descripcion || "").trim();
+      item._actividades.push({
+        titulo: (fila.actividad_titulo || "").trim(),
+        horario: (fila.horario || "").trim(),
+        lugar: (fila.lugar || "").trim(),
+        inscripcion: (fila.inscripcion || "").trim(),
+        descripcion: descripcionTexto
+          ? descripcionTexto.split(/\r?\n/).map((p) => p.trim()).filter(Boolean)
+          : "",
+        redes: (fila.redes || "").split(",").map((r) => r.trim()).filter(Boolean),
+      });
+    });
+
+    categorias.forEach((categoria) => {
+      categoria.items.forEach((item) => {
+        if (item._actividades.length === 1 && !item._actividades[0].titulo) {
+          const { titulo, ...resto } = item._actividades[0];
+          Object.assign(item, resto);
+        } else {
+          item.actividades = item._actividades;
+        }
+        delete item._actividades;
+      });
+    });
+
+    return categorias;
+  }
+
   function renderCategoria(categoria, color) {
     const details = el("details", { class: "categoria" });
     details.style.setProperty("--accent", color);
@@ -141,7 +205,7 @@
     if (total === 0) {
       body.appendChild(el("p", {
         class: "categoria__vacio",
-        text: "Próximamente. Sumá las actividades en agenda-data.js.",
+        text: "Próximamente.",
       }));
     } else {
       categoria.items.forEach((it) => body.appendChild(renderItem(it)));
@@ -150,9 +214,29 @@
     return details;
   }
 
-  (typeof AGENDA_DATA !== "undefined" ? AGENDA_DATA : []).forEach((categoria, i) => {
-    contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
-  });
+  function renderAgenda(categorias) {
+    contenedor.innerHTML = "";
+    categorias.forEach((categoria, i) => {
+      contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
+    });
+  }
+
+  contenedor.innerHTML = '<p class="categoria__vacio">Cargando agenda…</p>';
+
+  fetch(SHEET_CSV_URL)
+    .then((res) => {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    })
+    .then((csv) => {
+      const resultado = Papa.parse(csv, { header: true, skipEmptyLines: true });
+      renderAgenda(agruparFilas(resultado.data));
+    })
+    .catch((err) => {
+      console.error("No se pudo cargar la agenda desde Sheets:", err);
+      contenedor.innerHTML =
+        '<p class="categoria__vacio">No se pudo cargar la agenda en este momento. Probá recargar la página en un rato.</p>';
+    });
 })();
 </script>
 

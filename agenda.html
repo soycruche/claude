@@ -219,6 +219,17 @@
     categorias.forEach((categoria, i) => {
       contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
     });
+
+    // Al abrir una categoría, cierra las demás.
+    const categoriasEl = contenedor.querySelectorAll(".categoria");
+    categoriasEl.forEach((cat) => {
+      cat.addEventListener("toggle", () => {
+        if (!cat.open) return;
+        categoriasEl.forEach((otra) => {
+          if (otra !== cat) otra.open = false;
+        });
+      });
+    });
   }
 
   contenedor.innerHTML = '<p class="categoria__vacio">Cargando agenda…</p>';

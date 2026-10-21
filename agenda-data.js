@@ -291,7 +291,8 @@ const AGENDA_DATA = [
     ],
   },
   {
-    nombre: "Arte, Cultura y Recreación",
+    nombre: "Arte y Cultura",
+    nota: "librerías, artistas",
     items: [
       {
         titulo: "Aluche",
@@ -305,36 +306,12 @@ const AGENDA_DATA = [
         redes: ["@aluche_artes"],
       },
       {
-        titulo: "Arenal Espacio Creativo — taller de Cerámica",
-        horario:
-          "15.30 a 16.30 hs. y 17.30 a 18.30 hs. (duración 1 hora, 8 vacantes cada una). Para mayores de 18 años.",
-        lugar: "Concepción Arenal 3972",
-        inscripcion: "Con inscripción previa, en @arenal.espaciocreativo. Bono contribución: $5.000.",
-        descripcion: [
-          "Cerámica y Té argentino: una fusión de procesos creativos y degustación de sabores.",
-          "Trazaremos un recorrido por los procesos de producción artesanal de las tazas de cerámica, que luego estarán en una íntima relación con la experiencia de degustación de variedades de blends originarios de Misiones de Pasionarias Tea.",
-          "Apertura de tienda: 15 a 20 hs.",
-        ],
-        redes: ["@arenal.espaciocreativo", "@pasionarias_tea"],
-      },
-      {
         titulo: "Benjamín — cerámica, arte y objetos",
         horario: "15 a 18 hs. (duración 15 a 20 min.)",
         lugar: "Bonpland 744",
         descripcion:
           "Proceso de construcción: voy a mostrar cómo trabajo en la construcción de una pieza, compartiendo algunos de los procedimientos y decisiones que forman parte de mi manera de trabajar.",
         redes: ["@benjamin_ceramica"],
-      },
-      {
-        titulo: "Casa Naapura — Pilates, Arte y Movimiento",
-        horario: "14.30 hs. (duración clase 1 h y feria 3 h)",
-        lugar: "Guevara 525",
-        descripcion: [
-          "Movimiento Expresivo Exploratorio.",
-          "La jornada consta de una muestra/feria de alumnos del estudio y una clase abierta a la comunidad.",
-          "La clase tiene 3 momentos: uno de trabajo técnico de fuerza, flexibilidad y equilibrio con ejercicios de danza, pilates y yoga; un segundo de improvisación con fin exploratorio de calidades de movimiento, intencionalidad, expresividad y composición grupal; y un tercero de secuencia coreográfica fusionando estilos y técnicas, que cada estudiante va a poder ir llenando de vida y expresión propia.",
-        ],
-        redes: ["@casanaapura"],
       },
       {
         titulo: "Central Newbery",
@@ -346,12 +323,6 @@ const AGENDA_DATA = [
         ],
         redes: ["@centralnewbery"],
         pendientes: ["Poner otros IG de artistas"],
-      },
-      {
-        titulo: "Club Atlético Chacarita Juniors",
-        lugar: "Sede: Teodoro García 3550",
-        redes: ["@chacaoficial"],
-        pendientes: ["Pendiente info. Hablar con Laurita."],
       },
       {
         titulo: "Escena del crimen libros",
@@ -383,12 +354,6 @@ const AGENDA_DATA = [
         pendientes: ["Acortar texto de la descripción del After EK"],
       },
       {
-        titulo: "Fiammante — tienda y taller de gres",
-        lugar: "Av. Jorge Newbery 4035",
-        redes: ["@taller.fiammante"],
-        pendientes: ["Falta info y fotos"],
-      },
-      {
         titulo: "Hotelier Art Club",
         lugar: "Av. Jorge Newbery 3815",
         redes: ["@hotelierartclub"],
@@ -412,44 +377,12 @@ const AGENDA_DATA = [
         pendientes: ["Vincular con la categoría Chaca y Vino"],
       },
       {
-        titulo: "LABA, Laboratorio de Artes Buenos Aires",
-        horario: "16.00 a 17.30 hs.",
-        lugar: "Fraga 648",
-        inscripcion: "Con inscripción previa, link en bio de Casa de Canto.",
-        descripcion: "Gran canto colectivo dirigido por el director José Teixidó.",
-        redes: ["@casa.de.canto", "@laba_buenosaires"],
-      },
-      {
-        titulo: "Labú — taller de cerámica",
-        horario: "Desde las 19.30 hs. (duración 15 min., se repite cada 30 min.)",
-        lugar: "Av. Forest 379",
-        descripcion:
-          "Demostración del uso de un torno alfarero para la confección de un objeto en cerámica.",
-        redes: ["@labutallerdeceramica"],
-      },
-      {
-        titulo: "Orc Shop",
-        lugar: "Av. Jorge Newbery 3857",
-        descripcion:
-          "Chimi Juegos, editorial argentina de juegos: traen sus productos para que la gente pueda probarlos.",
-        redes: ["@orcshopgames"],
-      },
-      {
         titulo: "Otero y Dumont",
         horario: "16 hs.",
         lugar: "Otero 299",
         descripcion: "Charla: 7 formas de enmarcar una obra de arte.",
         redes: ["@oteroydumont"],
         pendientes: ["Faltan fotos"],
-      },
-      {
-        titulo: "Peregrino Indoor",
-        horario: "17 hs. (charla 15 min., práctica 45 min.). Para mayores de 12 años.",
-        lugar: "Av. Jorge Newbery 3566",
-        inscripcion: "Con inscripción previa, por Instagram (chequear con Iván).",
-        descripcion: "Charla introductoria sobre tiro con arco y práctica de tiro con arco.",
-        redes: ["@peregrinoindoor"],
-        pendientes: ['Revisar nota suelta: "Caminata besos"'],
       },
       {
         titulo: "Sólido Amorfo",
@@ -480,6 +413,80 @@ const AGENDA_DATA = [
         descripcion:
           "Feria de libros usados: 20% de descuento en libros usados seleccionados. Ofertas de usados a $5.000, $10.000 y $15.000.",
         redes: ["@verne.libros"],
+      },
+    ],
+  },
+  {
+    nombre: "Recreación",
+    nota: "yoga, talleres, arreglo de bici",
+    items: [
+      {
+        titulo: "Arenal Espacio Creativo — taller de Cerámica",
+        horario:
+          "15.30 a 16.30 hs. y 17.30 a 18.30 hs. (duración 1 hora, 8 vacantes cada una). Para mayores de 18 años.",
+        lugar: "Concepción Arenal 3972",
+        inscripcion: "Con inscripción previa, en @arenal.espaciocreativo. Bono contribución: $5.000.",
+        descripcion: [
+          "Cerámica y Té argentino: una fusión de procesos creativos y degustación de sabores.",
+          "Trazaremos un recorrido por los procesos de producción artesanal de las tazas de cerámica, que luego estarán en una íntima relación con la experiencia de degustación de variedades de blends originarios de Misiones de Pasionarias Tea.",
+          "Apertura de tienda: 15 a 20 hs.",
+        ],
+        redes: ["@arenal.espaciocreativo", "@pasionarias_tea"],
+      },
+      {
+        titulo: "Casa Naapura — Pilates, Arte y Movimiento",
+        horario: "14.30 hs. (duración clase 1 h y feria 3 h)",
+        lugar: "Guevara 525",
+        descripcion: [
+          "Movimiento Expresivo Exploratorio.",
+          "La jornada consta de una muestra/feria de alumnos del estudio y una clase abierta a la comunidad.",
+          "La clase tiene 3 momentos: uno de trabajo técnico de fuerza, flexibilidad y equilibrio con ejercicios de danza, pilates y yoga; un segundo de improvisación con fin exploratorio de calidades de movimiento, intencionalidad, expresividad y composición grupal; y un tercero de secuencia coreográfica fusionando estilos y técnicas, que cada estudiante va a poder ir llenando de vida y expresión propia.",
+        ],
+        redes: ["@casanaapura"],
+      },
+      {
+        titulo: "Club Atlético Chacarita Juniors",
+        lugar: "Sede: Teodoro García 3550",
+        redes: ["@chacaoficial"],
+        pendientes: ["Pendiente info. Hablar con Laurita."],
+      },
+      {
+        titulo: "Fiammante — tienda y taller de gres",
+        lugar: "Av. Jorge Newbery 4035",
+        redes: ["@taller.fiammante"],
+        pendientes: ["Falta info y fotos"],
+      },
+      {
+        titulo: "LABA, Laboratorio de Artes Buenos Aires",
+        horario: "16.00 a 17.30 hs.",
+        lugar: "Fraga 648",
+        inscripcion: "Con inscripción previa, link en bio de Casa de Canto.",
+        descripcion: "Gran canto colectivo dirigido por el director José Teixidó.",
+        redes: ["@casa.de.canto", "@laba_buenosaires"],
+      },
+      {
+        titulo: "Labú — taller de cerámica",
+        horario: "Desde las 19.30 hs. (duración 15 min., se repite cada 30 min.)",
+        lugar: "Av. Forest 379",
+        descripcion:
+          "Demostración del uso de un torno alfarero para la confección de un objeto en cerámica.",
+        redes: ["@labutallerdeceramica"],
+      },
+      {
+        titulo: "Orc Shop",
+        lugar: "Av. Jorge Newbery 3857",
+        descripcion:
+          "Chimi Juegos, editorial argentina de juegos: traen sus productos para que la gente pueda probarlos.",
+        redes: ["@orcshopgames"],
+      },
+      {
+        titulo: "Peregrino Indoor",
+        horario: "17 hs. (charla 15 min., práctica 45 min.). Para mayores de 12 años.",
+        lugar: "Av. Jorge Newbery 3566",
+        inscripcion: "Con inscripción previa, por Instagram (chequear con Iván).",
+        descripcion: "Charla introductoria sobre tiro con arco y práctica de tiro con arco.",
+        redes: ["@peregrinoindoor"],
+        pendientes: ['Revisar nota suelta: "Caminata besos"'],
       },
       {
         titulo: "Taller Nacional Bici Mecánica — Mecánica Express",

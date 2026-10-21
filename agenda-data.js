@@ -280,38 +280,278 @@ const AGENDA_DATA = [
   },
   {
     nombre: "Infancias",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
   {
-    nombre: "Arte y Cultura",
-    nota: "librerías, artistas",
-    items: [],
+    nombre: "Arte, Cultura y Recreación",
+    items: [
+      {
+        titulo: "Aluche",
+        horario: "20 hs. (duración 2.30 hs.)",
+        lugar: "Av. Dorrego 1184",
+        descripcion: [
+          '"Muña Muña, el yuyo del amor", de Tucumán a tu barrio.',
+          "Función especial, charla con la directora y, para terminar bien arriba, abrimos el karaoke y cantamos en vivo las canciones originales de la película. Y, después, lo que vos quieras.",
+          "Apto mayores de 13 años. Actividad a la gorra.",
+        ],
+        redes: ["@aluche_artes"],
+      },
+      {
+        titulo: "Arenal Espacio Creativo — taller de Cerámica",
+        horario:
+          "15.30 a 16.30 hs. y 17.30 a 18.30 hs. (duración 1 hora, 8 vacantes cada una). Para mayores de 18 años.",
+        lugar: "Concepción Arenal 3972",
+        inscripcion: "Con inscripción previa, en @arenal.espaciocreativo. Bono contribución: $5.000.",
+        descripcion: [
+          "Cerámica y Té argentino: una fusión de procesos creativos y degustación de sabores.",
+          "Trazaremos un recorrido por los procesos de producción artesanal de las tazas de cerámica, que luego estarán en una íntima relación con la experiencia de degustación de variedades de blends originarios de Misiones de Pasionarias Tea.",
+          "Apertura de tienda: 15 a 20 hs.",
+        ],
+        redes: ["@arenal.espaciocreativo", "@pasionarias_tea"],
+      },
+      {
+        titulo: "Benjamín — cerámica, arte y objetos",
+        horario: "15 a 18 hs. (duración 15 a 20 min.)",
+        lugar: "Bonpland 744",
+        descripcion:
+          "Proceso de construcción: voy a mostrar cómo trabajo en la construcción de una pieza, compartiendo algunos de los procedimientos y decisiones que forman parte de mi manera de trabajar.",
+        redes: ["@benjamin_ceramica"],
+      },
+      {
+        titulo: "Casa Naapura — Pilates, Arte y Movimiento",
+        horario: "14.30 hs. (duración clase 1 h y feria 3 h)",
+        lugar: "Guevara 525",
+        descripcion: [
+          "Movimiento Expresivo Exploratorio.",
+          "La jornada consta de una muestra/feria de alumnos del estudio y una clase abierta a la comunidad.",
+          "La clase tiene 3 momentos: uno de trabajo técnico de fuerza, flexibilidad y equilibrio con ejercicios de danza, pilates y yoga; un segundo de improvisación con fin exploratorio de calidades de movimiento, intencionalidad, expresividad y composición grupal; y un tercero de secuencia coreográfica fusionando estilos y técnicas, que cada estudiante va a poder ir llenando de vida y expresión propia.",
+        ],
+        redes: ["@casanaapura"],
+      },
+      {
+        titulo: "Central Newbery",
+        horario: "16 a 20 hs.",
+        lugar: "Av. Jorge Newbery 3599",
+        descripcion: [
+          'Muestra "Habitar el bosque": artistas Alejandra Guidardini, Leandro Niro, Mona Suárez, curaduría de Carolina Berardo.',
+          'Muestra "La femme dans tous ses états": pintura, fotografía, collage y escultura. Artistas de Argentina, Perú, México y Alemania.',
+        ],
+        redes: ["@centralnewbery"],
+        pendientes: ["Poner otros IG de artistas"],
+      },
+      {
+        titulo: "Club Atlético Chacarita Juniors",
+        lugar: "Sede: Teodoro García 3550",
+        redes: ["@chacaoficial"],
+        pendientes: ["Pendiente info. Hablar con Laurita."],
+      },
+      {
+        titulo: "Escena del crimen libros",
+        pendientes: ["Falta info"],
+      },
+      {
+        titulo: "Espacio Cultural Carlos Gardel — Tarde de swing",
+        horario: "16 a 20 hs.",
+        lugar: "Olleros 3640",
+        descripcion: [
+          "Tarde de swing en el Gardel: bandas de swing y clases.",
+          "Club Piso 13: banda de swing & blues de los años '30 y '40. Formación: Julieta Sollner (voz), Mauricio Rodríguez (piano), Matías Jorge (armónica), Nacho Graña (saxo), Darío Escape (contrabajo), Paula Guillén (batería).",
+          "Messengers: trío de swing y jazz de los años 40. Formación: Mariano Piñereiro (piano), Leandro Provera (bajo) y Eugenia Rei (voz y batería), con Ignacio Piñeiro como guitarrista invitado.",
+        ],
+        redes: ["@swingporlosbarrios", "@clubpisotrece", "@eccarlosgardel"],
+      },
+      {
+        titulo: "Espacio EK — POLIFASES + After EK",
+        horario: "16 a 2 am",
+        lugar: "Av. Jorge Newbery 3880",
+        descripcion: [
+          "A partir del diálogo de diferentes disciplinas artísticas, Espacio EK presenta una jornada con una curaduría que yuxtapone las diversas maneras de expresar el cuerpo y el movimiento mediante el arte.",
+          "16 hs. — Muestra visual donde el cuerpo y el movimiento se representan de diferentes maneras, desde la imagen figurativa hasta las marcas abstractas.",
+          'El bar del espacio, "Dos Pasos Café & Vinos", estará abierto para quien quiera quedarse viendo la exposición y tomando un trago.',
+          "20 hs. — Inicio del After EK, un ciclo para conocer nuevos artistas. En esta edición especial habrá un DJ set y una intervención performática de danza, hasta las 2 am.",
+          "Acceso a la exposición visual de la tarde sin costo. Performance de la noche con costo accesible, consumición incluida.",
+        ],
+        redes: ["@espacioek"],
+        pendientes: ["Acortar texto de la descripción del After EK"],
+      },
+      {
+        titulo: "Fiammante — tienda y taller de gres",
+        lugar: "Av. Jorge Newbery 4035",
+        redes: ["@taller.fiammante"],
+        pendientes: ["Falta info y fotos"],
+      },
+      {
+        titulo: "Hotelier Art Club",
+        lugar: "Av. Jorge Newbery 3815",
+        redes: ["@hotelierartclub"],
+        pendientes: ["Ver propuesta por WhatsApp"],
+      },
+      {
+        titulo: "Museo Fotográfico Simik — Bar Palacio",
+        lugar: "Av. Federico Lacroze 3901",
+        redes: ["@museosimik"],
+        pendientes: ["Preguntar actividad", "Noche de los Museos (pedir datos)"],
+      },
+      {
+        titulo: "Nativo Estudio — Showroom + Nativo Bar de Vinos",
+        horario: "Showroom 14 a 18 hs. · Bar de vinos desde las 18 hs.",
+        lugar: "Fraga 585",
+        descripcion: [
+          "A la tarde: open showroom de diseño y arte. El showroom estará abierto para recorrer una selección de mobiliario y objetos de diseño.",
+          "A la noche: inauguramos Nativo Bar de Vinos, una nueva propuesta para encontrarnos, disfrutar de buenos vinos y compartir algo rico.",
+        ],
+        redes: ["@nativo.estudio"],
+        pendientes: ["Vincular con la categoría Chaca y Vino"],
+      },
+      {
+        titulo: "LABA, Laboratorio de Artes Buenos Aires",
+        horario: "16.00 a 17.30 hs.",
+        lugar: "Fraga 648",
+        inscripcion: "Con inscripción previa, link en bio de Casa de Canto.",
+        descripcion: "Gran canto colectivo dirigido por el director José Teixidó.",
+        redes: ["@casa.de.canto", "@laba_buenosaires"],
+      },
+      {
+        titulo: "Labú — taller de cerámica",
+        horario: "Desde las 19.30 hs. (duración 15 min., se repite cada 30 min.)",
+        lugar: "Av. Forest 379",
+        descripcion:
+          "Demostración del uso de un torno alfarero para la confección de un objeto en cerámica.",
+        redes: ["@labutallerdeceramica"],
+      },
+      {
+        titulo: "Orc Shop",
+        lugar: "Av. Jorge Newbery 3857",
+        descripcion:
+          "Chimi Juegos, editorial argentina de juegos: traen sus productos para que la gente pueda probarlos.",
+        redes: ["@orcshopgames"],
+      },
+      {
+        titulo: "Otero y Dumont",
+        horario: "16 hs.",
+        lugar: "Otero 299",
+        descripcion: "Charla: 7 formas de enmarcar una obra de arte.",
+        redes: ["@oteroydumont"],
+        pendientes: ["Faltan fotos"],
+      },
+      {
+        titulo: "Peregrino Indoor",
+        horario: "17 hs. (charla 15 min., práctica 45 min.). Para mayores de 12 años.",
+        lugar: "Av. Jorge Newbery 3566",
+        inscripcion: "Con inscripción previa, por Instagram (chequear con Iván).",
+        descripcion: "Charla introductoria sobre tiro con arco y práctica de tiro con arco.",
+        redes: ["@peregrinoindoor"],
+        pendientes: ['Revisar nota suelta: "Caminata besos"'],
+      },
+      {
+        titulo: "Sólido Amorfo",
+        horario: "17 hs. (duración 15 min.)",
+        lugar: "Bonpland 750",
+        descripcion:
+          "Demostración de cómo se utiliza el vidrio plano y vidrio en polvo, por Silvina Lewin y Paula Lekerman.",
+        redes: ["@silvinalewinart"],
+      },
+      {
+        titulo: "Tacha — muestra individual de Albert Stella",
+        horario: "14 a 20 hs.",
+        lugar: "Humboldt 1271",
+        descripcion:
+          "La obra de Albert Stella es un reflejo de la fusión entre sus raíces africanas y las diversas culturas que han marcado su vida. Mayormente autodidacta y alejado de cualquier canon académico, su obra gráfica, objetual y pictórica es un flujo continuo y fresco de retratos vitales: un espacio de encuentro entre lo personal y lo universal que invita a conectar sin intermediarios con los temas fundamentales del arte.",
+        redes: ["@albertstellaart", "@tachabsas"],
+      },
+      {
+        titulo: "Ventana Galería",
+        lugar: "Av. Jorge Newbery 3599",
+        redes: ["@ventana.galeria"],
+        pendientes: ["Falta info"],
+      },
+      {
+        titulo: "Verne Libros",
+        horario: "Desde las 14 hs.",
+        lugar: "Juan Ramírez de Velasco 1427",
+        descripcion:
+          "Feria de libros usados: 20% de descuento en libros usados seleccionados. Ofertas de usados a $5.000, $10.000 y $15.000.",
+        redes: ["@verne.libros"],
+      },
+      {
+        titulo: "Taller Nacional Bici Mecánica — Mecánica Express",
+        horario: "Desde las 14 hs.",
+        lugar: "Av. Jorge Newbery 4009",
+        descripcion:
+          "Mecánica Express para bicicletas. Si tu bici tiene algún detalle para solucionar, contá con nosotros: vení a conocer el taller y llevátela andando. Ajuste de frenos y cambios, regulación de dirección, revisión de transmisión, inflado y ajustes generales. No incluye repuestos.",
+        redes: ["@tallernacionalbicimecanica"],
+        pendientes: ["Falta foto y logo separado", "Definir hasta qué hora"],
+      },
+    ],
   },
   {
     nombre: "Música",
     nota: "incluir a Casa de Canto como protagonista",
-    items: [],
-  },
-  {
-    nombre: "Recreación",
-    nota: "yoga, talleres, arreglo de bici",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
   {
     nombre: "Teatros",
     nota: "según lo que diga Germán",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
   {
     nombre: "Chaca y Vino",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
   {
     nombre: "Espacios Gastronómicos",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
   {
     nombre: "Cafés",
-    items: [],
+    items: [
+      {
+        titulo: "XXXXX",
+        horario: "de xx a xx hs",
+        lugar: "xxxxxxx",
+        inscripcion: "xxxxxx",
+        descripcion: "xxxxxx",
+      },
+    ],
   },
 ];

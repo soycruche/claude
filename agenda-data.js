@@ -170,7 +170,7 @@ const AGENDA_DATA = [
     ],
   },
   {
-    nombre: "#5 Diseño y Decoración",
+    nombre: "Diseño y Decoración",
     items: [
       {
         titulo: "Airaudo Platero",

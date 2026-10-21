@@ -9,14 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <style>
   :root {
-    --amarillo: #EACD59;
-    --azul: #0F57A7;
-    --rojo: #D74431;
-    --crema: #FBF5E4;
-    --papel: #FFFFFF;
-    --texto: #221A10;
-    --texto-suave: #6b5f4e;
-    --borde: #ecdfc3;
+    --texto: #121212;
+    --texto-suave: #5c5c5c;
+    --borde: #111111;
     --pendiente-bg: #fff3df;
     --pendiente-borde: #e4b566;
   }
@@ -25,47 +20,10 @@
 
   body {
     margin: 0;
-    background: var(--crema);
+    background: #ffffff;
     color: var(--texto);
     font-family: 'Oswald', Arial, sans-serif;
     line-height: 1.5;
-  }
-
-  .hero {
-    background: var(--amarillo);
-    color: #fff;
-    text-align: center;
-    padding: 48px 20px 40px;
-  }
-
-  .hero__te-conozco {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    font-size: clamp(1.3rem, 4vw, 1.8rem);
-    margin: 0;
-  }
-
-  .hero__chacarita {
-    font-family: 'Yellowtail', cursive;
-    font-size: clamp(3rem, 12vw, 5rem);
-    line-height: 1;
-    margin: 0 0 18px;
-  }
-
-  .hero__fecha {
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    font-size: clamp(1.4rem, 5vw, 2rem);
-    margin: 0;
-  }
-
-  .hero__lugar {
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    font-size: clamp(0.95rem, 3vw, 1.2rem);
-    margin: 4px 0 0;
-    opacity: 0.92;
   }
 
   .agenda {
@@ -81,25 +39,28 @@
 
   .agenda__header h2 {
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    font-size: clamp(1.5rem, 4.5vw, 2.1rem);
     color: var(--texto);
-    margin: 0 0 6px;
+    margin: 0 0 4px;
   }
 
-  .agenda__header p {
+  .agenda__marca {
     margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     color: var(--texto-suave);
-    font-weight: 400;
   }
 
   /* ---- Categoría (nivel 1) ---- */
   .categoria {
+    border: 1.5px solid var(--borde);
     border-radius: 14px;
     margin-bottom: 14px;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(34, 26, 16, 0.08);
   }
 
   .categoria > summary {
@@ -115,13 +76,10 @@
     text-transform: uppercase;
     font-size: 1.02rem;
     color: #fff;
+    background: var(--accent);
   }
 
   .categoria > summary::-webkit-details-marker { display: none; }
-
-  .categoria--amarillo > summary { background: var(--amarillo); }
-  .categoria--azul > summary { background: var(--azul); }
-  .categoria--rojo > summary { background: var(--rojo); }
 
   .categoria__titulo-wrap {
     display: flex;
@@ -170,7 +128,7 @@
   }
 
   .categoria__body {
-    background: var(--papel);
+    background: #fff;
     padding: 14px 16px 18px;
   }
 
@@ -183,10 +141,11 @@
 
   /* ---- Item (nivel 2, el "+") ---- */
   .item {
-    border: 1px solid var(--borde);
+    border: 1.5px solid var(--borde);
+    border-left: 5px solid var(--accent);
     border-radius: 10px;
     margin-bottom: 10px;
-    background: var(--crema);
+    background: #fff;
   }
 
   .item > summary {
@@ -224,7 +183,7 @@
     width: 24px;
     height: 24px;
     border-radius: 999px;
-    background: var(--rojo);
+    background: var(--accent);
     color: #fff;
     display: flex;
     align-items: center;
@@ -240,17 +199,18 @@
   .item__body {
     padding: 2px 16px 16px;
     font-family: Arial, sans-serif;
+    border-top: 1px solid #e5e5e5;
   }
 
   /* ---- Actividad (dentro del item, sin acordeón propio) ---- */
   .actividad {
     padding: 12px 0;
-    border-top: 1px dashed var(--borde);
+    border-top: 1px dashed #d8d8d8;
   }
 
   .actividad:first-child {
     border-top: none;
-    padding-top: 4px;
+    padding-top: 10px;
   }
 
   .actividad__titulo {
@@ -264,6 +224,7 @@
   .actividad__campo {
     margin: 4px 0;
     font-size: 0.88rem;
+    color: var(--texto);
   }
 
   .actividad__campo strong {
@@ -274,6 +235,7 @@
   .actividad__descripcion p {
     margin: 4px 0;
     font-size: 0.88rem;
+    color: var(--texto);
   }
 
   .actividad__redes {
@@ -284,7 +246,7 @@
   }
 
   .actividad__redes a {
-    color: var(--azul);
+    color: var(--accent);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 700;
@@ -304,27 +266,22 @@
   .actividad__pendientes div {
     font-weight: 700;
     margin-bottom: 4px;
+    color: var(--texto);
   }
 
   .actividad__pendientes ul {
     margin: 0;
     padding-left: 18px;
+    color: var(--texto);
   }
 </style>
 </head>
 <body>
 
-<div class="hero">
-  <p class="hero__te-conozco">TE CONOZCO</p>
-  <p class="hero__chacarita">Chacarita</p>
-  <p class="hero__fecha">14 DE NOVIEMBRE</p>
-  <p class="hero__lugar">CHACARITA · CABA</p>
-</div>
-
 <section class="agenda" id="agenda">
   <header class="agenda__header">
     <h2>Agenda de actividades</h2>
-    <p>Tocá cada categoría y cada actividad para ver el detalle.</p>
+    <p class="agenda__marca">Te conozco Chacarita</p>
   </header>
   <div id="agenda-contenido"></div>
 </section>
@@ -333,7 +290,20 @@
 <script>
 (function () {
   const contenedor = document.getElementById("agenda-contenido");
-  const COLORES = ["amarillo", "azul", "rojo"];
+
+  // Un color distinto por categoría, dentro de la misma paleta/tonalidad.
+  const CATEGORY_COLORS = [
+    "#EACD59", // Visitas guiadas, Caminatas y recorridos — mostaza
+    "#D74431", // Diseño y Decoración — terracota
+    "#0F57A7", // Infancias — azul
+    "#D9722E", // Arte y Cultura — naranja quemado
+    "#3C8577", // Música — verde azulado
+    "#7A8B3C", // Recreación — verde oliva
+    "#7A4870", // Teatros — ciruela
+    "#9C3F55", // Chaca y Vino — vino
+    "#70472B", // Espacios Gastronómicos — marrón tierra
+    "#1B3A5C", // Cafés — azul petróleo
+  ];
 
   function el(tag, props = {}, children = []) {
     const node = document.createElement(tag);
@@ -383,26 +353,28 @@
     return wrap;
   }
 
-  function renderActividad(act) {
+  function renderCampos(obj, incluirTitulo) {
     const wrap = el("div", { class: "actividad" });
-    wrap.appendChild(el("p", { class: "actividad__titulo", text: act.titulo || "" }));
-    if (act.horario) {
-      wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Horario: " }), document.createTextNode(act.horario)]));
+    if (incluirTitulo && obj.titulo) {
+      wrap.appendChild(el("p", { class: "actividad__titulo", text: obj.titulo }));
     }
-    if (act.lugar) {
+    if (obj.horario) {
       wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Lugar: " }), document.createTextNode(act.lugar)]));
+        [el("strong", { text: "Horario: " }), document.createTextNode(obj.horario)]));
     }
-    if (act.inscripcion) {
+    if (obj.lugar) {
       wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Inscripción: " }), document.createTextNode(act.inscripcion)]));
+        [el("strong", { text: "Lugar: " }), document.createTextNode(obj.lugar)]));
     }
-    const desc = renderDescripcion(act.descripcion);
+    if (obj.inscripcion) {
+      wrap.appendChild(el("div", { class: "actividad__campo" },
+        [el("strong", { text: "Inscripción: " }), document.createTextNode(obj.inscripcion)]));
+    }
+    const desc = renderDescripcion(obj.descripcion);
     if (desc) wrap.appendChild(desc);
-    const redes = renderRedes(act.redes);
+    const redes = renderRedes(obj.redes);
     if (redes) wrap.appendChild(redes);
-    const pend = renderPendientes(act.pendientes);
+    const pend = renderPendientes(obj.pendientes);
     if (pend) wrap.appendChild(pend);
     return wrap;
   }
@@ -416,18 +388,23 @@
     details.appendChild(el("summary", {}, [tituloWrap, el("span", { class: "item__toggle" })]));
 
     const body = el("div", { class: "item__body" });
-    (item.actividades || []).forEach((act) => body.appendChild(renderActividad(act)));
+    if (item.actividades && item.actividades.length) {
+      item.actividades.forEach((act) => body.appendChild(renderCampos(act, true)));
+    } else {
+      body.appendChild(renderCampos(item, false));
+    }
     details.appendChild(body);
     return details;
   }
 
-  function contarActividades(categoria) {
-    return (categoria.items || []).reduce((n, it) => n + (it.actividades || []).length, 0);
+  function contarItems(categoria) {
+    return (categoria.items || []).length;
   }
 
   function renderCategoria(categoria, color) {
-    const details = el("details", { class: "categoria categoria--" + color });
-    const total = contarActividades(categoria);
+    const details = el("details", { class: "categoria" });
+    details.style.setProperty("--accent", color);
+    const total = contarItems(categoria);
 
     const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
       el("span", { text: categoria.nombre }),
@@ -458,7 +435,7 @@
   }
 
   (typeof AGENDA_DATA !== "undefined" ? AGENDA_DATA : []).forEach((categoria, i) => {
-    contenedor.appendChild(renderCategoria(categoria, COLORES[i % COLORES.length]));
+    contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
   });
 })();
 </script>

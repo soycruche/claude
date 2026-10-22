@@ -158,7 +158,7 @@ body {
 .item__titulo-wrap {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 5px;
 }
 
 .item__titulo {
@@ -166,6 +166,13 @@ body {
   font-size: 0.95rem;
   text-transform: uppercase;
   color: var(--texto);
+}
+
+.item__linea2 {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .item__subtitulo {
@@ -178,6 +185,11 @@ body {
   font-weight: 600;
   font-size: 0.78rem;
   color: var(--accent);
+}
+
+.item__punto {
+  font-size: 0.78rem;
+  color: var(--texto-suave);
 }
 
 .item__toggle {

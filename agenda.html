@@ -83,6 +83,15 @@
     return wrap;
   }
 
+  // Link a Google Maps: usa el que se cargó a mano (maps_url) si existe,
+  // si no arma una búsqueda a partir de la dirección (lugar).
+  function mapsHref(obj) {
+    if (obj.mapsUrl) return obj.mapsUrl;
+    if (!obj.lugar) return null;
+    const query = obj.lugar + ", Chacarita, CABA";
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(query);
+  }
+
   function renderCampos(obj, incluirTitulo) {
     const wrap = el("div", { class: "actividad" });
     if (incluirTitulo && obj.titulo) {
@@ -93,8 +102,13 @@
         [el("strong", { text: "Horario: " }), document.createTextNode(obj.horario)]));
     }
     if (obj.lugar) {
-      wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Lugar: " }), document.createTextNode(obj.lugar)]));
+      const href = mapsHref(obj);
+      wrap.appendChild(el("div", { class: "actividad__campo" }, [
+        el("strong", { text: "Lugar: " }),
+        href
+          ? el("a", { href, target: "_blank", rel: "noopener noreferrer", class: "actividad__maps", text: obj.lugar })
+          : document.createTextNode(obj.lugar),
+      ]));
     }
     if (obj.inscripcion) {
       wrap.appendChild(el("div", { class: "actividad__campo" },
@@ -201,6 +215,7 @@
           ? descripcionTexto.split(/\r?\n/).map((p) => p.trim()).filter(Boolean)
           : "",
         redes: (fila.redes || "").split(",").map((r) => r.trim()).filter(Boolean),
+        mapsUrl: (fila.maps_url || "").trim(),
       });
     });
 

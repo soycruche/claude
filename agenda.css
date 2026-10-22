@@ -135,6 +135,12 @@ body {
   margin-bottom: 10px;
   background: #fff;
   box-shadow: 0 1px 2px rgba(18, 18, 18, 0.08);
+  transition: background-color 0.15s ease;
+}
+
+.item:hover,
+.item[open] {
+  background: var(--accent-10);
 }
 
 .item > summary {

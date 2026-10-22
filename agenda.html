@@ -186,9 +186,18 @@
     return categorias;
   }
 
+  function hexToRgba(hex, alpha) {
+    const n = parseInt(hex.replace("#", ""), 16);
+    const r = (n >> 16) & 255;
+    const g = (n >> 8) & 255;
+    const b = n & 255;
+    return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+  }
+
   function renderCategoria(categoria, color) {
     const details = el("details", { class: "categoria" });
     details.style.setProperty("--accent", color);
+    details.style.setProperty("--accent-10", hexToRgba(color, 0.1));
     const total = contarItems(categoria);
 
     const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [

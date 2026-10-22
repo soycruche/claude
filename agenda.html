@@ -105,9 +105,10 @@
       const href = mapsHref(obj);
       wrap.appendChild(el("div", { class: "actividad__campo" }, [
         el("strong", { text: "Lugar: " }),
+        document.createTextNode(obj.lugar),
         href
-          ? el("a", { href, target: "_blank", rel: "noopener noreferrer", class: "actividad__maps", text: obj.lugar })
-          : document.createTextNode(obj.lugar),
+          ? el("a", { href, target: "_blank", rel: "noopener noreferrer", class: "actividad__maps", text: "VER MAPA" })
+          : null,
       ]));
     }
     if (obj.inscripcion) {
@@ -126,13 +127,10 @@
     const horario = horarioRepresentativo(item);
     const tituloWrap = el("span", { class: "item__titulo-wrap" }, [
       el("span", { class: "item__titulo", text: item.titulo || "" }),
+      horario ? el("span", { class: "item__horario", text: horario }) : null,
       item.subtitulo ? el("span", { class: "item__subtitulo", text: item.subtitulo }) : null,
     ]);
-    const meta = el("span", { class: "item__meta" }, [
-      horario ? el("span", { class: "item__horario", text: horario }) : null,
-      el("span", { class: "item__toggle" }),
-    ]);
-    details.appendChild(el("summary", {}, [tituloWrap, meta]));
+    details.appendChild(el("summary", {}, [tituloWrap, el("span", { class: "item__toggle" })]));
 
     const body = el("div", { class: "item__body" });
     if (item.actividades && item.actividades.length) {

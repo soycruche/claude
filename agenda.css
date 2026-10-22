@@ -174,18 +174,10 @@ body {
   color: var(--texto-suave);
 }
 
-.item__meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
 .item__horario {
   font-weight: 600;
   font-size: 0.78rem;
   color: var(--accent);
-  white-space: nowrap;
 }
 
 .item__toggle {
@@ -243,9 +235,14 @@ body {
 }
 
 .actividad__maps {
+  display: inline-block;
+  margin-left: 8px;
   color: var(--accent);
+  font-weight: 700;
+  font-size: 0.78rem;
   text-decoration: underline;
   text-underline-offset: 2px;
+  white-space: nowrap;
 }
 
 .actividad__maps:hover {

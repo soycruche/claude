@@ -109,11 +109,16 @@
 
   function renderItem(item) {
     const details = el("details", { class: "item" });
+    const horario = horarioRepresentativo(item);
     const tituloWrap = el("span", { class: "item__titulo-wrap" }, [
       el("span", { class: "item__titulo", text: item.titulo || "" }),
       item.subtitulo ? el("span", { class: "item__subtitulo", text: item.subtitulo }) : null,
     ]);
-    details.appendChild(el("summary", {}, [tituloWrap, el("span", { class: "item__toggle" })]));
+    const meta = el("span", { class: "item__meta" }, [
+      horario ? el("span", { class: "item__horario", text: horario }) : null,
+      el("span", { class: "item__toggle" }),
+    ]);
+    details.appendChild(el("summary", {}, [tituloWrap, meta]));
 
     const body = el("div", { class: "item__body" });
     if (item.actividades && item.actividades.length) {
@@ -127,6 +132,34 @@
 
   function contarItems(categoria) {
     return (categoria.items || []).length;
+  }
+
+  // Saca la primera hora que aparece en un texto de horario libre
+  // ("16 a 18 hs.", "Desde las 14 hs.", "15.30 a 16.30 hs.") y la
+  // convierte a minutos desde la medianoche, para poder ordenar.
+  function horarioAMinutos(h) {
+    if (!h) return null;
+    const m = h.match(/(\d{1,2})[.:]?(\d{2})?/);
+    if (!m) return null;
+    const hh = parseInt(m[1], 10);
+    const mm = m[2] ? parseInt(m[2], 10) : 0;
+    if (hh > 23 || mm > 59) return null;
+    return hh * 60 + mm;
+  }
+
+  // El horario "representativo" de un item: el suyo propio si lo tiene,
+  // o el más temprano entre sus actividades si es un item agrupado.
+  function horarioRepresentativo(item) {
+    if (item.horario) return item.horario;
+    if (item.actividades && item.actividades.length) {
+      const conHorario = item.actividades.filter((a) => a.horario);
+      if (!conHorario.length) return "";
+      conHorario.sort(
+        (a, b) => (horarioAMinutos(a.horario) ?? Infinity) - (horarioAMinutos(b.horario) ?? Infinity)
+      );
+      return conHorario[0].horario;
+    }
+    return "";
   }
 
   // Convierte las filas planas de la planilla (una fila por actividad) en
@@ -180,6 +213,17 @@
           item.actividades = item._actividades;
         }
         delete item._actividades;
+      });
+
+      // Ordena los items de la categoría por horario (los que no tienen
+      // horario quedan al final, en el orden en que aparecen en la planilla).
+      categoria.items.sort((a, b) => {
+        const ma = horarioAMinutos(horarioRepresentativo(a));
+        const mb = horarioAMinutos(horarioRepresentativo(b));
+        if (ma === null && mb === null) return 0;
+        if (ma === null) return 1;
+        if (mb === null) return -1;
+        return ma - mb;
       });
     });
 

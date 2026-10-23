@@ -92,6 +92,20 @@
     return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(query);
   }
 
+  // Si el texto de inscripción trae un link pegado (ej. a un Google Form),
+  // lo reemplaza por la palabra "formulario" clickeable; deja el resto del
+  // texto tal cual.
+  function renderInscripcion(texto) {
+    const re = /(https?:\/\/\S+)/g;
+    const partes = texto.split(re);
+    if (partes.length === 1) return [document.createTextNode(texto)];
+    return partes.map((parte, i) =>
+      i % 2 === 1
+        ? el("a", { href: parte, target: "_blank", rel: "noopener noreferrer", class: "actividad__maps", text: "formulario" })
+        : document.createTextNode(parte)
+    );
+  }
+
   function renderCampos(obj, incluirTitulo) {
     const wrap = el("div", { class: "actividad" });
     if (incluirTitulo && obj.titulo) {
@@ -101,7 +115,7 @@
     if (desc) wrap.appendChild(desc);
     if (obj.inscripcion) {
       wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Inscripción: " }), document.createTextNode(obj.inscripcion)]));
+        [el("strong", { text: "Inscripción: " }), ...renderInscripcion(obj.inscripcion)]));
     }
     if (obj.lugar) {
       const href = mapsHref(obj);

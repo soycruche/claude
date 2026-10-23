@@ -97,9 +97,11 @@
     if (incluirTitulo && obj.titulo) {
       wrap.appendChild(el("p", { class: "actividad__titulo", text: obj.titulo }));
     }
-    if (obj.horario) {
+    const desc = renderDescripcion(obj.descripcion);
+    if (desc) wrap.appendChild(desc);
+    if (obj.inscripcion) {
       wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Horario: " }), document.createTextNode(obj.horario)]));
+        [el("strong", { text: "Inscripción: " }), document.createTextNode(obj.inscripcion)]));
     }
     if (obj.lugar) {
       const href = mapsHref(obj);
@@ -111,12 +113,6 @@
           : null,
       ]));
     }
-    if (obj.inscripcion) {
-      wrap.appendChild(el("div", { class: "actividad__campo" },
-        [el("strong", { text: "Inscripción: " }), document.createTextNode(obj.inscripcion)]));
-    }
-    const desc = renderDescripcion(obj.descripcion);
-    if (desc) wrap.appendChild(desc);
     const redes = renderRedes(obj.redes);
     if (redes) wrap.appendChild(redes);
     return wrap;

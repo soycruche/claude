@@ -32,6 +32,27 @@ body {
   height: auto;
 }
 
+/* ---- Footer (participan / apoyan) ---- */
+.agenda-footer {
+  background: #fff;
+  border-top: 0.5pt solid #000;
+}
+
+.agenda-footer__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.agenda-footer__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* ---- Categoría (nivel 1) ---- */
 .categoria {
   border-radius: 18px;

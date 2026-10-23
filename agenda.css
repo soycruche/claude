@@ -168,11 +168,11 @@ body {
   color: var(--texto);
 }
 
-.item__linea2 {
+.item__linea1 {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 10px;
 }
 
 .item__subtitulo {
@@ -185,11 +185,6 @@ body {
   font-weight: 600;
   font-size: 0.78rem;
   color: var(--accent);
-}
-
-.item__punto {
-  font-size: 0.78rem;
-  color: var(--texto-suave);
 }
 
 .item__toggle {

@@ -248,8 +248,8 @@ body {
 
 .actividad__maps {
   display: inline-block;
-  margin-left: 8px;
-  color: var(--accent);
+  margin-left: 12px;
+  color: var(--texto);
   font-weight: 700;
   font-size: 0.78rem;
   text-decoration: underline;

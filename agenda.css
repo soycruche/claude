@@ -219,7 +219,7 @@ body {
 
 .actividad:first-child {
   border-top: none;
-  padding-top: 10px;
+  padding-top: 4px;
 }
 
 .actividad__titulo {
@@ -243,7 +243,7 @@ body {
 
 .actividad__maps {
   display: inline-block;
-  margin-left: 12px;
+  margin-left: 6px;
   color: var(--texto);
   font-weight: 700;
   font-size: 0.78rem;

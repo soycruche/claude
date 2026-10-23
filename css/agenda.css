@@ -35,7 +35,23 @@ body {
 /* ---- Footer (participan / apoyan) ---- */
 .agenda-footer {
   background: #fff;
-  border-top: 0.5pt solid #000;
+}
+
+.agenda-footer::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    #e3c85d 0%, #e3c85d 12.5%,
+    #df9745 12.5%, #df9745 25%,
+    #c64436 25%, #c64436 37.5%,
+    #a5763e 37.5%, #a5763e 50%,
+    #85b859 50%, #85b859 62.5%,
+    #6aafce 62.5%, #6aafce 75%,
+    #235091 75%, #235091 87.5%,
+    #574d8a 87.5%, #574d8a 100%
+  );
 }
 
 .agenda-footer__inner {

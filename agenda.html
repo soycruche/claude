@@ -36,18 +36,20 @@
   const SHEET_CSV_URL =
     "https://docs.google.com/spreadsheets/d/1oLdtQzdmme7pPJ-NBG_-6BhbpjC6SOH_eI6HRoOpJtk/export?format=csv&gid=280225905";
 
-  // Un color distinto por categoría, dentro de la misma paleta/tonalidad.
+  // Un color distinto por categoría, tomados de la barrita de colores del
+  // footer (y un par de complementarios para las categorías que no estaban
+  // en esa lista), según el orden en que aparecen en la planilla.
   const CATEGORY_COLORS = [
-    "#EACD59", // Visitas guiadas, Caminatas y recorridos — mostaza
-    "#D74431", // Diseño y Decoración — terracota
-    "#0F57A7", // Infancias — azul
-    "#D9722E", // Arte y Cultura — naranja quemado
-    "#7A8B3C", // Recreación — verde oliva
-    "#3C8577", // Música — verde azulado
-    "#7A4870", // Teatros — ciruela
-    "#9C3F55", // Chaca y Vino — vino
-    "#70472B", // Espacios Gastronómicos — marrón tierra
-    "#1B3A5C", // Cafés — azul petróleo
+    "#DF9745", // Espacio Central Terminal 39 — naranja
+    "#235091", // Visitas guiadas, Caminatas y recorridos — azul
+    "#574D8A", // Diseño y Decoración — violeta
+    "#E3C85D", // Infancias — amarillo
+    "#6AAFCE", // Arte y Cultura — celeste (complementario)
+    "#85B859", // Recreación y Bienestar — verde
+    "#3E7C74", // Música y Teatros — verde azulado (complementario)
+    "#9C3F55", // Chaca y Vino — borravino
+    "#C64436", // Espacios Gastronómicos — rojo
+    "#A5763E", // Cafés — marrón
   ];
 
   function el(tag, props = {}, children = []) {

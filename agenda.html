@@ -125,13 +125,13 @@
   function renderItem(item) {
     const details = el("details", { class: "item" });
     const horario = horarioRepresentativo(item);
-    const linea1 = el("span", { class: "item__linea1" }, [
-      el("span", { class: "item__titulo", text: item.titulo || "" }),
+    const linea2 = el("span", { class: "item__linea2" }, [
+      horario ? el("span", { class: "item__horario", text: horario }) : null,
       item.subtitulo ? el("span", { class: "item__subtitulo", text: item.subtitulo }) : null,
     ]);
     const tituloWrap = el("span", { class: "item__titulo-wrap" }, [
-      linea1,
-      horario ? el("span", { class: "item__horario", text: horario }) : null,
+      el("span", { class: "item__titulo", text: item.titulo || "" }),
+      linea2,
     ]);
     details.appendChild(el("summary", {}, [tituloWrap, el("span", { class: "item__toggle" })]));
 

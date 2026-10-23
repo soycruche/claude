@@ -168,7 +168,7 @@ body {
   color: var(--texto);
 }
 
-.item__linea1 {
+.item__linea2 {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
@@ -177,13 +177,13 @@ body {
 
 .item__subtitulo {
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   color: var(--texto-suave);
 }
 
 .item__horario {
   font-weight: 600;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   color: var(--accent);
 }
 

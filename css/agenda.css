@@ -32,6 +32,16 @@ body {
   height: auto;
 }
 
+.agenda__intro {
+  font-family: Arial, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--texto);
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 24px;
+}
+
 /* ---- Footer (participan / apoyan) ---- */
 .agenda-footer {
   background: #fff;

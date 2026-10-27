@@ -42,6 +42,39 @@ body {
   margin: 0 auto 24px;
 }
 
+/* ---- Redes sociales ---- */
+.agenda-social {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 0 32px;
+}
+
+.agenda-social__btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid var(--texto);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.agenda-social__btn svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--texto);
+}
+
+.agenda-social__btn:hover {
+  background: var(--texto);
+}
+
+.agenda-social__btn:hover svg {
+  fill: #fff;
+}
+
 /* ---- Footer (participan / apoyan) ---- */
 .agenda-footer {
   background: #fff;

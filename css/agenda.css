@@ -54,25 +54,21 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 1.5px solid var(--texto);
+  background: var(--texto);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .agenda-social__btn svg {
   width: 22px;
   height: 22px;
-  fill: var(--texto);
+  fill: #fff;
 }
 
 .agenda-social__btn:hover {
-  background: var(--texto);
-}
-
-.agenda-social__btn:hover svg {
-  fill: #fff;
+  opacity: 0.8;
 }
 
 /* ---- Footer (participan / apoyan) ---- */

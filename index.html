@@ -264,7 +264,7 @@
         descripcion: descripcionTexto
           ? descripcionTexto.split(/\r?\n/).map((p) => p.trim()).filter(Boolean)
           : "",
-        redes: (fila.redes || "").split(",").map((r) => r.trim()).filter(Boolean),
+        redes: (fila.redes || "").split(/[,\s]+/).map((r) => r.trim()).filter(Boolean),
         mapsUrl: (fila.maps_url || "").trim(),
       });
     });

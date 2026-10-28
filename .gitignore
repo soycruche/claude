@@ -1,0 +1,6 @@
+assets/*
+!assets/.gitkeep
+out/
+sheet.csv
+_post.html
+_raw.png

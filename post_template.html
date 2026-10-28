@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #eee; }
+
+  .post {
+    width: 1080px;
+    height: 1350px;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+
+  .post__photo {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1080px;
+    height: 844px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .post__stripe {
+    position: absolute;
+    top: 844px; left: 0;
+    height: 25px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      #ECCC39 0.0%, #ECCC39 12.5%,
+      #F8991D 12.5%, #F8991D 25.0%,
+      #EA3325 25.0%, #EA3325 37.5%,
+      #B97B2A 37.5%, #B97B2A 50.0%,
+      #7BC248 50.0%, #7BC248 62.5%,
+      #45BAE3 62.5%, #45BAE3 75.0%,
+      #055CAB 75.0%, #055CAB 87.5%,
+      #6253A4 87.5%, #6253A4 100.0%
+    );
+  }
+
+  .post__body {
+    position: absolute;
+    top: 869px; left: 0; right: 0; bottom: 0;
+    padding: 59px 0 0 50px;
+  }
+
+  .post__badge {
+    display: inline-block;
+    vertical-align: top;
+    height: 67px;
+    margin-left: 4px;
+    padding: 6px 12px 0 0;
+    background: var(--accent);
+    color: #fff;
+    font-size: 65px;
+    line-height: 1;
+    letter-spacing: 0.6px;
+    overflow: hidden;
+  }
+
+  .post__titulo {
+    color: #121212;
+    font-size: 86px;
+    line-height: 1;
+    margin-top: 28px;
+    letter-spacing: 0.25px;
+    max-width: 715px;
+    text-transform: uppercase;
+  }
+
+  .post__subtitulo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    color: #121212;
+    font-size: 43.5px;
+    line-height: 1.15;
+    margin-top: -8px;
+    max-width: 700px;
+    text-transform: uppercase;
+  }
+
+  .post__handle {
+    position: absolute;
+    left: 51px;
+    top: 386px;
+    font-size: 46px;
+    line-height: 1;
+    color: #121212;
+  }
+
+  .post__sep {
+    display: inline-block;
+    width: 3px;
+    height: 0.7em;
+    margin: 0 12px 0 12px;
+    background: #EA3325;
+  }
+
+  .post__logo {
+    position: absolute;
+    left: 803px;
+    top: 60px;
+    width: 221px;
+    height: 221px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .post__logo--box {
+    object-fit: contain;
+    background: #fff;
+    border: 2px solid #e2e2e2;
+    padding: 34px;
+  }
+
+  .post__tcc {
+    position: absolute;
+    left: 801px;
+    top: 359px;
+    width: 226px;
+  }
+</style>
+</head>
+<body>
+  <div class="post" style="--accent:%%COLOR%%;">
+    <img class="post__photo" src="%%PHOTO%%" alt="">
+    <div class="post__stripe"></div>
+    <div class="post__body">
+      <span class="post__badge">%%HORARIO%%</span>
+      <div class="post__titulo">%%TITULO%%</div>
+      <div class="post__subtitulo">%%SUBTITULO%%</div>
+      <div class="post__handle">14.11<span class="post__sep"></span>TECONOZCOCHACARITA.COM</div>
+      %%LOGO%%
+      <img class="post__tcc" src="tcc_logo_official.png" alt="">
+    </div>
+  </div>
+<script>
+document.fonts.ready.then(() => {
+  const t = document.querySelector('.post__titulo');
+  const s = document.querySelector('.post__subtitulo');
+  const h = document.querySelector('.post__handle');
+  const limit = h.getBoundingClientRect().top - 24;
+  const lines = (el, lh) => Math.round(el.getBoundingClientRect().height / lh);
+  const setT = (fs) => { t.style.fontSize = fs + 'px'; };
+  const setS = (fs) => { s.style.fontSize = fs + 'px'; };
+  let T = 86;
+  setT(T);
+  while (lines(t, T) > 2 && T > 60) setT(--T);
+  let S = 43.5;
+  setS(S);
+  while (s.getBoundingClientRect().bottom > limit && S > 32) setS(S -= 0.5);
+  if (s.getBoundingClientRect().bottom > limit) {
+    const lh = S * 1.15;
+    const n = Math.max(1, Math.floor((limit - s.getBoundingClientRect().top) / lh));
+    s.style.display = '-webkit-box';
+    s.style.webkitBoxOrient = 'vertical';
+    s.style.webkitLineClamp = n;
+    s.style.overflow = 'hidden';
+  }
+  document.body.setAttribute('data-ready', '1');
+});
+</script>
+</body>
+</html>

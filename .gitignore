@@ -4,3 +4,5 @@ out/
 sheet.csv
 _post.html
 _raw.png
+node_modules/
+_variant_*.html

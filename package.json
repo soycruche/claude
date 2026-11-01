@@ -1,0 +1,8 @@
+{
+  "name": "posteos-estatico-festival",
+  "private": true,
+  "description": "Generador de posteos del festival Te Conozco Chacarita",
+  "dependencies": {
+    "ag-psd": "30.2.0"
+  }
+}

@@ -10,6 +10,8 @@ festival Te Conozco Chacarita, a partir de la planilla de la agenda.
   (subtítulo).
 - `tcc_logo_official.png`: logo de Te Conozco Chacarita.
 - `tools/gen_posts.py`: arma un JPG por ítem de la planilla.
+- `tools/build_psd.js`: arma el PSD con capas de un posteo (lo llama
+  `gen_posts.py` con la opción `--psd`).
 - `tools/measure.py`: mide posición y tamaño de cada elemento de un posteo
   (sirve para comparar contra la referencia si se toca el diseño).
 
@@ -31,7 +33,26 @@ festival Te Conozco Chacarita, a partir de la planilla de la agenda.
    python3 tools/gen_posts.py sheet.csv . out 'CAMINATA "PAISAJEANTE"'
    ```
 
-Los JPG quedan en `out/`. Necesita Chromium (headless) e ImageMagick.
+   Para generar también el PSD con capas de cada posteo, agregar `--psd`
+   (la primera vez, correr `npm install` en esta carpeta):
+
+   ```
+   python3 tools/gen_posts.py sheet.csv . out --psd
+   ```
+
+Los JPG (y PSD) quedan en `out/`. Necesita Chromium (headless), ImageMagick
+y, para los PSD, Node.js.
+
+## PSD
+
+Cada PSD tiene una capa por elemento: fondo, foto, barrita de colores, caja
+del horario, logo del participante, logo de Te Conozco Chacarita, punto rojo
+y los textos (horario, título, subtítulo, fecha y web) como capas de texto
+editables en Bebas Neue y Georgia Bold.
+
+Al abrirlo, Photoshop avisa que hay que actualizar las capas de texto: hay que
+elegir "Actualizar". Para que se vean bien, Bebas Neue y Georgia tienen que
+estar instaladas en la computadora.
 
 ## Reglas del diseño
 
@@ -41,7 +62,7 @@ Los JPG quedan en `out/`. Necesita Chromium (headless) e ImageMagick.
   que entren las dos líneas.
 - El subtítulo usa la columna `subtitulo_post` si existe y tiene texto; si no,
   `item_subtitulo`. Si es muy largo se achica y, como último recurso, se corta
-  con "…".
+  en la última palabra que entra y se agrega "…".
 - Logos cuadrados se recortan en círculo; logos no cuadrados van dentro de un
   círculo blanco.
 - Si un ítem no tiene foto en `assets/`, se saltea.

@@ -138,7 +138,7 @@
       <span class="post__badge">%%HORARIO%%</span>
       <div class="post__titulo">%%TITULO%%</div>
       <div class="post__subtitulo">%%SUBTITULO%%</div>
-      <div class="post__handle">14.11<span class="post__sep"></span>TECONOZCOCHACARITA.COM</div>
+      <div class="post__handle"><span class="post__fecha">14.11</span><span class="post__sep"></span><span class="post__web">TECONOZCOCHACARITA.COM</span></div>
       %%LOGO%%
       <img class="post__tcc" src="tcc_logo_official.png" alt="">
     </div>
@@ -159,12 +159,11 @@ document.fonts.ready.then(() => {
   setS(S);
   while (s.getBoundingClientRect().bottom > limit && S > 32) setS(S -= 0.5);
   if (s.getBoundingClientRect().bottom > limit) {
-    const lh = S * 1.15;
-    const n = Math.max(1, Math.floor((limit - s.getBoundingClientRect().top) / lh));
-    s.style.display = '-webkit-box';
-    s.style.webkitBoxOrient = 'vertical';
-    s.style.webkitLineClamp = n;
-    s.style.overflow = 'hidden';
+    const words = s.textContent.trim().split(/\s+/);
+    while (words.length > 1 && s.getBoundingClientRect().bottom > limit) {
+      words.pop();
+      s.textContent = words.join(' ').replace(/[,.;:\u2013\u2014-]+$/, '') + '\u2026';
+    }
   }
   document.body.setAttribute('data-ready', '1');
 });

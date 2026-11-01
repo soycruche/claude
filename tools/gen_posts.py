@@ -53,7 +53,7 @@ def logo_html(assets_dir, logo):
     cls = 'post__logo' if abs(w - h) / max(w, h) < 0.1 else 'post__logo post__logo--box'
     return f'<img class="{cls}" src="assets/{html.escape(logo)}" alt="">'
 
-def render(row, assets_dir, workdir, out_jpg):
+def render(row, assets_dir, workdir, out_jpg, psd=False):
     photo, logo = find_assets(assets_dir, row['item'])
     if not photo:
         print('SIN FOTO:', row['item']); return False
@@ -72,14 +72,21 @@ def render(row, assets_dir, workdir, out_jpg):
                     '--window-size=1200,1500', f'--screenshot={raw}',
                     'file://' + os.path.abspath(page_path)], capture_output=True)
     subprocess.run(['convert', raw, '-crop', '1080x1350+0+0', '+repage', '-quality', '92', out_jpg], check=True)
-    print('OK', out_jpg, '| logo:', logo or '(sin logo)')
+    if psd:
+        out_psd = os.path.splitext(out_jpg)[0] + '.psd'
+        subprocess.run(['node', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'build_psd.js'),
+                        page_path, out_psd], check=True, stdout=subprocess.DEVNULL)
+    print('OK', out_jpg, '+ PSD' if psd else '', '| logo:', logo or '(sin logo)')
     return True
 
 if __name__ == '__main__':
-    csv_path, workdir, outdir = sys.argv[1], sys.argv[2], sys.argv[3]
-    only = sys.argv[4:]
+    args = sys.argv[1:]
+    psd = '--psd' in args
+    args = [a for a in args if a != '--psd']
+    csv_path, workdir, outdir = args[0], args[1], args[2]
+    only = args[3:]
     os.makedirs(outdir, exist_ok=True)
     for row in load_rows(csv_path):
         if only and slug(row['item']) not in {slug(o) for o in only}:
             continue
-        render(row, os.path.join(workdir, 'assets'), workdir, os.path.join(outdir, slug(row['item']) + '.jpg'))
+        render(row, os.path.join(workdir, 'assets'), workdir, os.path.join(outdir, slug(row['item']) + '.jpg'), psd)

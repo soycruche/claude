@@ -42,11 +42,50 @@ body {
   margin: 0 auto 24px;
 }
 
-/* ---- Selector de vista (por horario / por categoría) ---- */
+/* ---- Selector de vista (por horario / por categoría) + mapa ---- */
+.agenda__controles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px 24px;
+  margin: 0 auto 20px;
+}
+
+.agenda__mapa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Oswald', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  height: 48px;
+  padding: 0 22px;
+  border: 2px solid var(--texto);
+  border-radius: 999px;
+  background: var(--texto);
+  color: #fff;
+  transition: opacity 0.15s ease;
+}
+
+.agenda__mapa:hover { opacity: 0.8; }
+
+.agenda__mapa svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .agenda__vista {
   display: flex;
   width: fit-content;
-  margin: 0 auto 20px;
   padding: 3px;
   background: #fff;
   border: 2px solid var(--texto);

@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/agenda.css?v=12">
+<link rel="stylesheet" href="css/agenda.css?v=13">
 </head>
 <body>
 
@@ -44,6 +44,10 @@
     <img src="images/header.png" alt="Te conozco Chacarita — Sábado 14 de noviembre, 14 hs." class="agenda__header-img" width="2319" height="1072" style="display:block; width:100%; height:auto;">
   </header>
   <p class="agenda__intro">Te invitamos a descubrir la programación del festival. <strong>Mirá todas las propuestas y armá tu propio recorrido.</strong><br>Algunas de las actividades son con inscripción previa.</p>
+  <div class="agenda__vista" role="group" aria-label="Ver la agenda">
+    <button type="button" data-vista="horario" aria-pressed="true">Por horario</button>
+    <button type="button" data-vista="categorias" aria-pressed="false">Por categoría</button>
+  </div>
   <div id="agenda-contenido"></div>
 </section>
 
@@ -181,23 +185,23 @@
   // franja de la hora en que empieza.
   const PRIMERA_HORA = 14;
   const ULTIMA_HORA = 21;
-  const FRANJA_COLORS = [
-    "#ECCC39", "#F8991D", "#EA3325", "#B97B2A",
-    "#7BC248", "#45BAE3", "#055CAB", "#6253A4",
-  ];
-  const COLOR_A_CONFIRMAR = "#8A8A8A";
+  const COLOR_FRANJA = "#45BAE3";
 
+  // En la vista por horario cada item trae su categoría y su color; en la
+  // vista por categoría hereda el color del desplegable que lo contiene.
   function renderItem(item) {
     const details = el("details", { class: "item" });
-    details.style.setProperty("--accent", item.color);
-    details.style.setProperty("--accent-10", hexToRgba(item.color, 0.1));
+    if (item.color) {
+      details.style.setProperty("--accent", item.color);
+      details.style.setProperty("--accent-10", hexToRgba(item.color, 0.1));
+    }
     const horario = horarioRepresentativo(item);
     const linea2 = el("span", { class: "item__linea2" }, [
       horario ? el("span", { class: "item__horario", text: horario }) : null,
       item.subtitulo ? el("span", { class: "item__subtitulo", text: item.subtitulo }) : null,
     ]);
     const tituloWrap = el("span", { class: "item__titulo-wrap" }, [
-      el("span", { class: "item__categoria", text: item.categorias.join(" · ") }),
+      item.categorias ? el("span", { class: "item__categoria", text: item.categorias.join(" · ") }) : null,
       el("span", { class: "item__titulo", text: item.titulo || "" }),
       linea2,
     ]);
@@ -346,9 +350,9 @@
   function armarFranjas(categorias) {
     const franjas = [];
     for (let h = PRIMERA_HORA; h <= ULTIMA_HORA; h++) {
-      franjas.push({ nombre: nombreFranja(h), color: FRANJA_COLORS[(h - PRIMERA_HORA) % FRANJA_COLORS.length], items: [], claves: new Map() });
+      franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
-    const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_A_CONFIRMAR, items: [], claves: new Map() };
+    const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
 
     categorias.forEach((categoria, i) => {
       const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length];
@@ -419,21 +423,69 @@
     return details;
   }
 
-  function renderAgenda(categorias) {
-    contenedor.innerHTML = "";
-    armarFranjas(categorias).forEach((franja) => contenedor.appendChild(renderFranja(franja)));
+  function renderCategoria(categoria, color) {
+    const details = el("details", { class: "categoria" });
+    details.style.setProperty("--accent", color);
+    details.style.setProperty("--accent-10", hexToRgba(color, 0.1));
+    const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
+      el("span", { text: categoria.nombre }),
+    ]);
+    const meta = el("span", { class: "categoria__meta" }, [
+      el("span", { class: "categoria__chevron" }),
+    ]);
+    details.appendChild(el("summary", {}, [tituloWrap, meta]));
 
-    // Al abrir una franja, cierra las demás.
-    const franjasEl = contenedor.querySelectorAll(".categoria");
-    franjasEl.forEach((fr) => {
-      fr.addEventListener("toggle", () => {
-        if (!fr.open) return;
-        franjasEl.forEach((otra) => {
-          if (otra !== fr) otra.open = false;
+    const body = el("div", { class: "categoria__body" });
+    if (!categoria.items.length) {
+      body.appendChild(el("p", { class: "categoria__vacio", text: "Próximamente." }));
+    } else {
+      categoria.items.forEach((it) => body.appendChild(renderItem(it)));
+    }
+    details.appendChild(body);
+    return details;
+  }
+
+  // La vista elegida queda en la dirección (#categorias), así un link
+  // compartido abre directamente en esa vista.
+  const botonesVista = document.querySelectorAll(".agenda__vista button");
+
+  function vistaActual() {
+    return location.hash === "#categorias" ? "categorias" : "horario";
+  }
+
+  function renderAgenda(categorias) {
+    const vista = vistaActual();
+    botonesVista.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.vista === vista)));
+
+    contenedor.innerHTML = "";
+    if (vista === "categorias") {
+      categorias.forEach((categoria, i) => {
+        contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
+      });
+    } else {
+      armarFranjas(categorias).forEach((franja) => contenedor.appendChild(renderFranja(franja)));
+    }
+
+    // Al abrir un desplegable, cierra los demás.
+    const desplegables = contenedor.querySelectorAll(".categoria");
+    desplegables.forEach((d) => {
+      d.addEventListener("toggle", () => {
+        if (!d.open) return;
+        desplegables.forEach((otro) => {
+          if (otro !== d) otro.open = false;
         });
       });
     });
   }
+
+  let categoriasCargadas = null;
+
+  botonesVista.forEach((b) => {
+    b.addEventListener("click", () => {
+      history.replaceState(null, "", b.dataset.vista === "categorias" ? "#categorias" : location.pathname + location.search);
+      if (categoriasCargadas) renderAgenda(categoriasCargadas);
+    });
+  });
 
   contenedor.innerHTML = '<p class="categoria__vacio">Cargando agenda…</p>';
 
@@ -444,7 +496,8 @@
     })
     .then((csv) => {
       const resultado = Papa.parse(csv, { header: true, skipEmptyLines: true });
-      renderAgenda(agruparFilas(resultado.data));
+      categoriasCargadas = agruparFilas(resultado.data);
+      renderAgenda(categoriasCargadas);
     })
     .catch((err) => {
       console.error("No se pudo cargar la agenda desde Sheets:", err);

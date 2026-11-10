@@ -42,6 +42,36 @@ body {
   margin: 0 auto 24px;
 }
 
+/* ---- Selector de vista (por horario / por categoría) ---- */
+.agenda__vista {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto 20px;
+  padding: 3px;
+  background: #fff;
+  border: 2px solid var(--texto);
+  border-radius: 999px;
+}
+
+.agenda__vista button {
+  font-family: 'Oswald', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.agenda__vista button[aria-pressed="true"] {
+  background: var(--texto);
+  color: #fff;
+}
+
 /* ---- Redes sociales ---- */
 .agenda-social {
   display: flex;

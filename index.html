@@ -46,8 +46,8 @@
   <p class="agenda__intro">Te invitamos a descubrir la programación del festival. <strong>Mirá todas las propuestas y armá tu propio recorrido.</strong><br>Algunas de las actividades son con inscripción previa.</p>
   <div class="agenda__controles">
     <div class="agenda__vista" role="group" aria-label="Ver la agenda">
-      <button type="button" data-vista="horario" aria-pressed="true">Por horario</button>
-      <button type="button" data-vista="categorias" aria-pressed="false">Por categoría</button>
+      <button type="button" data-vista="horario" aria-pressed="false">Por horario</button>
+      <button type="button" data-vista="categorias" aria-pressed="true">Por categoría</button>
     </div>
     <a class="agenda__mapa" href="https://teconozcochacarita.com/mapa-tcch-2026.pdf" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
@@ -474,12 +474,12 @@
     return details;
   }
 
-  // La vista elegida queda en la dirección (#categorias), así un link
-  // compartido abre directamente en esa vista.
+  // Por defecto se ve por categoría. La vista por horario queda en la
+  // dirección (#horario), así un link compartido abre directamente en esa vista.
   const botonesVista = document.querySelectorAll(".agenda__vista button");
 
   function vistaActual() {
-    return location.hash === "#categorias" ? "categorias" : "horario";
+    return location.hash === "#horario" ? "horario" : "categorias";
   }
 
   // En la vista por horario, estas categorías no van en las franjas sino
@@ -532,7 +532,7 @@
 
   botonesVista.forEach((b) => {
     b.addEventListener("click", () => {
-      history.replaceState(null, "", b.dataset.vista === "categorias" ? "#categorias" : location.pathname + location.search);
+      history.replaceState(null, "", b.dataset.vista === "horario" ? "#horario" : location.pathname + location.search);
       if (categoriasCargadas) renderAgenda(categoriasCargadas);
     });
   });

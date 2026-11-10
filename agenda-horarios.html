@@ -271,10 +271,14 @@
       }
 
       const tituloItem = (fila.item || "").trim();
-      const claveItem = nombreCategoria + "|" + tituloItem;
+      const subtitulo = (fila.item_subtitulo || "").trim();
+      // Filas del mismo lugar sin título de actividad pero con subtítulos
+      // distintos son propuestas distintas (ej.: una exposición a las 20 y
+      // una charla a las 21.30): van como items separados.
+      const claveItem = nombreCategoria + "|" + tituloItem +
+        ((fila.actividad_titulo || "").trim() ? "" : "|" + subtitulo);
       let item = indiceItems.get(claveItem);
       if (!item) {
-        const subtitulo = (fila.item_subtitulo || "").trim();
         item = { titulo: tituloItem, subtitulo: subtitulo || undefined, _actividades: [] };
         indiceItems.set(claveItem, item);
         categoria.items.push(item);

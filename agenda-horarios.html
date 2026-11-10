@@ -367,9 +367,9 @@
       franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
     const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
-    const todoElDia = { nombre: "Toda la tarde", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const todoElDia = { nombre: "14 a 20 hs. Horario de corrido", color: COLOR_FRANJA, items: [], claves: new Map() };
 
-    categorias.forEach((categoria) => {
+    categorias.forEach((categoria, ordenCategoria) => {
       const color = colorDe(categoria);
       categoria.items.forEach((item) => {
         const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
@@ -399,7 +399,7 @@
             if (!existente.categorias.includes(categoria.nombre)) existente.categorias.push(categoria.nombre);
             return;
           }
-          const entrada = Object.assign({}, item, { categorias: [categoria.nombre], color, orden });
+          const entrada = Object.assign({}, item, { categorias: [categoria.nombre], color, orden, ordenCategoria });
           franja.claves.set(clave, entrada);
           franja.items.push(entrada);
         });
@@ -407,8 +407,11 @@
     });
 
     const todas = [todoElDia].concat(franjas, [aConfirmar]).filter((f) => f.items.length);
+    // Dentro de cada pestaña: agrupado por categoría (en el orden de la
+    // planilla) y, dentro de cada categoría, por hora de inicio.
     todas.forEach((f) => {
-      f.items.sort((a, b) => a.orden - b.orden || a.titulo.localeCompare(b.titulo, "es"));
+      f.items.sort((a, b) => a.ordenCategoria - b.ordenCategoria || a.orden - b.orden ||
+        a.titulo.localeCompare(b.titulo, "es"));
     });
     return todas;
   }

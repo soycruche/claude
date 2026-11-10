@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/agenda.css?v=11">
+<link rel="stylesheet" href="css/agenda.css?v=14">
 </head>
 <body>
 
@@ -44,6 +44,16 @@
     <img src="images/header.png" alt="Te conozco Chacarita — Sábado 14 de noviembre, 14 hs." class="agenda__header-img" width="2319" height="1072" style="display:block; width:100%; height:auto;">
   </header>
   <p class="agenda__intro">Te invitamos a descubrir la programación del festival. <strong>Mirá todas las propuestas y armá tu propio recorrido.</strong><br>Algunas de las actividades son con inscripción previa.</p>
+  <div class="agenda__controles">
+    <div class="agenda__vista" role="group" aria-label="Ver la agenda">
+      <button type="button" data-vista="horario" aria-pressed="true">Por horario</button>
+      <button type="button" data-vista="categorias" aria-pressed="false">Por categoría</button>
+    </div>
+    <a class="agenda__mapa" href="https://teconozcochacarita.com/mapa-tcch-2026.pdf" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+      Descargar mapa
+    </a>
+  </div>
   <div id="agenda-contenido"></div>
 </section>
 
@@ -58,7 +68,7 @@
 
 <footer class="agenda-footer">
   <div class="agenda-footer__inner">
-    <img src="images/footer2.jpg" alt="Participan y apoyan" class="agenda-footer__img" style="display:block; width:100%; height:auto;">
+    <img src="images/footer.jpg" alt="Participan y apoyan" class="agenda-footer__img" style="display:block; width:100%; height:auto;">
   </div>
 </footer>
 
@@ -177,14 +187,27 @@
     return wrap;
   }
 
+  // Una franja por hora del festival, de 14 a 21. Cada actividad va en la
+  // franja de la hora en que empieza.
+  const PRIMERA_HORA = 14;
+  const ULTIMA_HORA = 21;
+  const COLOR_FRANJA = "#595959";
+
+  // En la vista por horario cada item trae su categoría y su color; en la
+  // vista por categoría hereda el color del desplegable que lo contiene.
   function renderItem(item) {
     const details = el("details", { class: "item" });
+    if (item.color) {
+      details.style.setProperty("--accent", item.color);
+      details.style.setProperty("--accent-10", hexToRgba(item.color, 0.1));
+    }
     const horario = horarioRepresentativo(item);
     const linea2 = el("span", { class: "item__linea2" }, [
       horario ? el("span", { class: "item__horario", text: horario }) : null,
       item.subtitulo ? el("span", { class: "item__subtitulo", text: item.subtitulo }) : null,
     ]);
     const tituloWrap = el("span", { class: "item__titulo-wrap" }, [
+      item.categorias ? el("span", { class: "item__categoria", text: item.categorias.join(" · ") }) : null,
       el("span", { class: "item__titulo", text: item.titulo || "" }),
       linea2,
     ]);
@@ -198,10 +221,6 @@
     }
     details.appendChild(body);
     return details;
-  }
-
-  function contarItems(categoria) {
-    return (categoria.items || []).length;
   }
 
   // Saca la primera hora que aparece en un texto de horario libre
@@ -252,10 +271,14 @@
       }
 
       const tituloItem = (fila.item || "").trim();
-      const claveItem = nombreCategoria + "|" + tituloItem;
+      const subtitulo = (fila.item_subtitulo || "").trim();
+      // Filas del mismo lugar sin título de actividad pero con subtítulos
+      // distintos son propuestas distintas (ej.: una exposición a las 20 y
+      // una charla a las 21.30): van como items separados.
+      const claveItem = nombreCategoria + "|" + tituloItem +
+        ((fila.actividad_titulo || "").trim() ? "" : "|" + subtitulo);
       let item = indiceItems.get(claveItem);
       if (!item) {
-        const subtitulo = (fila.item_subtitulo || "").trim();
         item = { titulo: tituloItem, subtitulo: subtitulo || undefined, _actividades: [] };
         indiceItems.set(claveItem, item);
         categoria.items.push(item);
@@ -301,6 +324,108 @@
     return categorias;
   }
 
+  // Horas de inicio (en minutos) de un horario libre. Las horas que vienen
+  // después de "A" o "HASTA" son de cierre, no de inicio: "16.00 A 18.00 HS"
+  // empieza a las 16; "14.00 16.00 y 18.00 HS" empieza a las 14, 16 y 18.
+  // "todoElDia" marca horarios sin inicio que igual están abiertos desde que
+  // arranca el festival ("HASTA 20 HS", "TODO EL DIA").
+  function inicios(horario) {
+    const t = (horario || "").toUpperCase();
+    const re = /(HASTA(?:\s+LAS)?\s+|\bA\s+)?(\d{1,2})(?:[.:](\d{2}))?/g;
+    const out = [];
+    const cierres = [];
+    let m;
+    while ((m = re.exec(t))) {
+      const hh = parseInt(m[2], 10);
+      const mm = m[3] ? parseInt(m[3], 10) : 0;
+      if (hh > 23 || mm > 59) continue;
+      (m[1] ? cierres : out).push(hh * 60 + mm);
+    }
+    return { inicios: out, cierres, todoElDia: /HASTA|TODO EL D[IÍ]A|\b24\s*HS/.test(t) };
+  }
+
+  // Está abierta toda la tarde si lo dice el horario, si no tiene hora de
+  // inicio pero sí de cierre ("HASTA 20 HS"), o si abre a las 14 (o antes)
+  // y cierra a las 19 o más tarde ("14 A 19.00 HS").
+  const CIERRE_TODO_EL_DIA = 19 * 60;
+
+  function esTodoElDia(horario) {
+    const t = (horario || "").toUpperCase();
+    if (/TODO EL D[IÍ]A|\b24\s*HS/.test(t)) return true;
+    const r = inicios(horario);
+    if (!r.inicios.length) return r.todoElDia;
+    return Math.min(...r.inicios) <= PRIMERA_HORA * 60 &&
+      r.cierres.length > 0 && Math.max(...r.cierres) >= CIERRE_TODO_EL_DIA;
+  }
+
+  function normalizar(texto) {
+    return (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/["“”]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  function nombreFranja(hora) {
+    return String(hora).padStart(2, "0") + ".00 HS";
+  }
+
+  // Reparte los items de todas las categorías en franjas horarias. Lo que ya
+  // está abierto a las 14 (o empieza antes) va en la primera franja; lo que
+  // empieza a las 21 o más tarde, en la última. Si un mismo lugar figura en
+  // varias categorías, aparece una sola vez por franja.
+  function armarFranjas(categorias, colorDe) {
+    const franjas = [];
+    for (let h = PRIMERA_HORA; h <= ULTIMA_HORA; h++) {
+      franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
+    }
+    const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const todoElDia = { nombre: "14 a 20 hs. Horario de corrido", color: COLOR_FRANJA, items: [], claves: new Map() };
+
+    categorias.forEach((categoria, ordenCategoria) => {
+      const color = colorDe(categoria);
+      categoria.items.forEach((item) => {
+        const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
+        // Lo que está abierto toda la tarde va en su propia pestaña; si además
+        // tiene actividades con hora puntual, esas siguen en su franja.
+        let minutos = [];
+        let abiertoTodoElDia = false;
+        horarios.forEach((h) => {
+          if (esTodoElDia(h)) abiertoTodoElDia = true;
+          else minutos = minutos.concat(inicios(h).inicios);
+        });
+
+        const destinos = new Map();
+        if (abiertoTodoElDia) destinos.set(todoElDia, 0);
+        minutos.forEach((min) => {
+          const hora = Math.min(Math.max(Math.floor(min / 60), PRIMERA_HORA), ULTIMA_HORA);
+          const franja = franjas[hora - PRIMERA_HORA];
+          const orden = Math.max(min, PRIMERA_HORA * 60);
+          if (!destinos.has(franja) || orden < destinos.get(franja)) destinos.set(franja, orden);
+        });
+        if (!destinos.size) destinos.set(aConfirmar, 0);
+
+        destinos.forEach((orden, franja) => {
+          const clave = normalizar(item.titulo);
+          const existente = franja.claves.get(clave);
+          if (existente) {
+            if (!existente.categorias.includes(categoria.nombre)) existente.categorias.push(categoria.nombre);
+            return;
+          }
+          const entrada = Object.assign({}, item, { categorias: [categoria.nombre], color, orden, ordenCategoria });
+          franja.claves.set(clave, entrada);
+          franja.items.push(entrada);
+        });
+      });
+    });
+
+    const todas = [todoElDia].concat(franjas, [aConfirmar]).filter((f) => f.items.length);
+    // Dentro de cada pestaña: agrupado por categoría (en el orden de la
+    // planilla) y, dentro de cada categoría, por hora de inicio.
+    todas.forEach((f) => {
+      f.items.sort((a, b) => a.ordenCategoria - b.ordenCategoria || a.orden - b.orden ||
+        a.titulo.localeCompare(b.titulo, "es"));
+    });
+    return todas;
+  }
+
   function hexToRgba(hex, alpha) {
     const n = parseInt(hex.replace("#", ""), 16);
     const r = (n >> 16) & 255;
@@ -309,28 +434,39 @@
     return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
   }
 
+  function renderFranja(franja) {
+    const details = el("details", { class: "categoria" });
+    details.style.setProperty("--accent", franja.color);
+    details.style.setProperty("--accent-10", hexToRgba(franja.color, 0.1));
+    const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
+      el("span", { text: franja.nombre }),
+    ]);
+    const meta = el("span", { class: "categoria__meta" }, [
+      el("span", { class: "categoria__chevron" }),
+    ]);
+    details.appendChild(el("summary", {}, [tituloWrap, meta]));
+
+    const body = el("div", { class: "categoria__body" });
+    franja.items.forEach((it) => body.appendChild(renderItem(it)));
+    details.appendChild(body);
+    return details;
+  }
+
   function renderCategoria(categoria, color) {
     const details = el("details", { class: "categoria" });
     details.style.setProperty("--accent", color);
     details.style.setProperty("--accent-10", hexToRgba(color, 0.1));
-    const total = contarItems(categoria);
-
     const tituloWrap = el("span", { class: "categoria__titulo-wrap" }, [
       el("span", { text: categoria.nombre }),
     ]);
-
     const meta = el("span", { class: "categoria__meta" }, [
       el("span", { class: "categoria__chevron" }),
     ]);
-
     details.appendChild(el("summary", {}, [tituloWrap, meta]));
 
     const body = el("div", { class: "categoria__body" });
-    if (total === 0) {
-      body.appendChild(el("p", {
-        class: "categoria__vacio",
-        text: "Próximamente.",
-      }));
+    if (!categoria.items.length) {
+      body.appendChild(el("p", { class: "categoria__vacio", text: "Próximamente." }));
     } else {
       categoria.items.forEach((it) => body.appendChild(renderItem(it)));
     }
@@ -338,23 +474,68 @@
     return details;
   }
 
-  function renderAgenda(categorias) {
-    contenedor.innerHTML = "";
-    categorias.forEach((categoria, i) => {
-      contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
-    });
+  // La vista elegida queda en la dirección (#categorias), así un link
+  // compartido abre directamente en esa vista.
+  const botonesVista = document.querySelectorAll(".agenda__vista button");
 
-    // Al abrir una categoría, cierra las demás.
-    const categoriasEl = contenedor.querySelectorAll(".categoria");
-    categoriasEl.forEach((cat) => {
-      cat.addEventListener("toggle", () => {
-        if (!cat.open) return;
-        categoriasEl.forEach((otra) => {
-          if (otra !== cat) otra.open = false;
+  function vistaActual() {
+    return location.hash === "#categorias" ? "categorias" : "horario";
+  }
+
+  // En la vista por horario, estas categorías no van en las franjas sino
+  // abajo, como desplegables por categoría (se comparan sin tildes ni comillas).
+  // Espacio Central va primero, tal cual como en la vista por categoría.
+  const CATEGORIAS_ARRIBA = ["espacio central"];
+  const CATEGORIAS_APARTE = ["gastronom", "cafe", "chaca y vino"];
+
+  function coincide(categoria, claves) {
+    const nombre = normalizar(categoria.nombre);
+    return claves.some((clave) => nombre.includes(clave));
+  }
+
+  const vaArriba = (categoria) => coincide(categoria, CATEGORIAS_ARRIBA);
+  const vaAparte = (categoria) => coincide(categoria, CATEGORIAS_APARTE);
+
+  function renderAgenda(categorias) {
+    const vista = vistaActual();
+    botonesVista.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.vista === vista)));
+
+    // El color de cada categoría sale de su orden en la planilla, igual en las dos vistas.
+    const colores = new Map(categorias.map((c, i) => [c, CATEGORY_COLORS[i % CATEGORY_COLORS.length]]));
+    const colorDe = (categoria) => colores.get(categoria);
+
+    contenedor.innerHTML = "";
+    if (vista === "categorias") {
+      categorias.forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
+    } else {
+      categorias.filter(vaArriba)
+        .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
+      armarFranjas(categorias.filter((c) => !vaArriba(c) && !vaAparte(c)), colorDe)
+        .forEach((franja) => contenedor.appendChild(renderFranja(franja)));
+      categorias.filter(vaAparte)
+        .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
+    }
+
+    // Al abrir un desplegable, cierra los demás.
+    const desplegables = contenedor.querySelectorAll(".categoria");
+    desplegables.forEach((d) => {
+      d.addEventListener("toggle", () => {
+        if (!d.open) return;
+        desplegables.forEach((otro) => {
+          if (otro !== d) otro.open = false;
         });
       });
     });
   }
+
+  let categoriasCargadas = null;
+
+  botonesVista.forEach((b) => {
+    b.addEventListener("click", () => {
+      history.replaceState(null, "", b.dataset.vista === "categorias" ? "#categorias" : location.pathname + location.search);
+      if (categoriasCargadas) renderAgenda(categoriasCargadas);
+    });
+  });
 
   contenedor.innerHTML = '<p class="categoria__vacio">Cargando agenda…</p>';
 
@@ -365,7 +546,8 @@
     })
     .then((csv) => {
       const resultado = Papa.parse(csv, { header: true, skipEmptyLines: true });
-      renderAgenda(agruparFilas(resultado.data));
+      categoriasCargadas = agruparFilas(resultado.data);
+      renderAgenda(categoriasCargadas);
     })
     .catch((err) => {
       console.error("No se pudo cargar la agenda desde Sheets:", err);

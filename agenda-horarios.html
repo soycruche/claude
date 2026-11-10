@@ -323,15 +323,29 @@
     const t = (horario || "").toUpperCase();
     const re = /(HASTA(?:\s+LAS)?\s+|\bA\s+)?(\d{1,2})(?:[.:](\d{2}))?/g;
     const out = [];
+    const cierres = [];
     let m;
     while ((m = re.exec(t))) {
-      if (m[1]) continue;
       const hh = parseInt(m[2], 10);
       const mm = m[3] ? parseInt(m[3], 10) : 0;
       if (hh > 23 || mm > 59) continue;
-      out.push(hh * 60 + mm);
+      (m[1] ? cierres : out).push(hh * 60 + mm);
     }
-    return { inicios: out, todoElDia: /HASTA|TODO EL D[IÍ]A|\b24\s*HS/.test(t) };
+    return { inicios: out, cierres, todoElDia: /HASTA|TODO EL D[IÍ]A|\b24\s*HS/.test(t) };
+  }
+
+  // Está abierta "todo el día" si lo dice el horario, si no tiene hora de
+  // inicio pero sí de cierre ("HASTA 20 HS"), o si abre a las 14 (o antes)
+  // y cierra a las 19 o más tarde ("14 A 19.00 HS").
+  const CIERRE_TODO_EL_DIA = 19 * 60;
+
+  function esTodoElDia(horario) {
+    const t = (horario || "").toUpperCase();
+    if (/TODO EL D[IÍ]A|\b24\s*HS/.test(t)) return true;
+    const r = inicios(horario);
+    if (!r.inicios.length) return r.todoElDia;
+    return Math.min(...r.inicios) <= PRIMERA_HORA * 60 &&
+      r.cierres.length > 0 && Math.max(...r.cierres) >= CIERRE_TODO_EL_DIA;
   }
 
   function normalizar(texto) {
@@ -353,21 +367,23 @@
       franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
     const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const todoElDia = { nombre: "Todo el día", color: COLOR_FRANJA, items: [], claves: new Map() };
 
     categorias.forEach((categoria) => {
       const color = colorDe(categoria);
       categoria.items.forEach((item) => {
         const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
+        // Lo que está abierto todo el día va en su propia pestaña; si además
+        // tiene actividades con hora puntual, esas siguen en su franja.
         let minutos = [];
-        let todoElDia = false;
+        let abiertoTodoElDia = false;
         horarios.forEach((h) => {
-          const r = inicios(h);
-          minutos = minutos.concat(r.inicios);
-          if (r.todoElDia) todoElDia = true;
+          if (esTodoElDia(h)) abiertoTodoElDia = true;
+          else minutos = minutos.concat(inicios(h).inicios);
         });
-        if (!minutos.length && todoElDia) minutos = [PRIMERA_HORA * 60];
 
         const destinos = new Map();
+        if (abiertoTodoElDia) destinos.set(todoElDia, 0);
         minutos.forEach((min) => {
           const hora = Math.min(Math.max(Math.floor(min / 60), PRIMERA_HORA), ULTIMA_HORA);
           const franja = franjas[hora - PRIMERA_HORA];
@@ -390,7 +406,7 @@
       });
     });
 
-    const todas = franjas.concat([aConfirmar]).filter((f) => f.items.length);
+    const todas = [todoElDia].concat(franjas, [aConfirmar]).filter((f) => f.items.length);
     todas.forEach((f) => {
       f.items.sort((a, b) => a.orden - b.orden || a.titulo.localeCompare(b.titulo, "es"));
     });
@@ -455,12 +471,17 @@
 
   // En la vista por horario, estas categorías no van en las franjas sino
   // abajo, como desplegables por categoría (se comparan sin tildes ni comillas).
+  // Espacio Central va primero, tal cual como en la vista por categoría.
+  const CATEGORIAS_ARRIBA = ["espacio central"];
   const CATEGORIAS_APARTE = ["gastronom", "cafe", "chaca y vino"];
 
-  function vaAparte(categoria) {
+  function coincide(categoria, claves) {
     const nombre = normalizar(categoria.nombre);
-    return CATEGORIAS_APARTE.some((clave) => nombre.includes(clave));
+    return claves.some((clave) => nombre.includes(clave));
   }
+
+  const vaArriba = (categoria) => coincide(categoria, CATEGORIAS_ARRIBA);
+  const vaAparte = (categoria) => coincide(categoria, CATEGORIAS_APARTE);
 
   function renderAgenda(categorias) {
     const vista = vistaActual();
@@ -474,7 +495,9 @@
     if (vista === "categorias") {
       categorias.forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
     } else {
-      armarFranjas(categorias.filter((c) => !vaAparte(c)), colorDe)
+      categorias.filter(vaArriba)
+        .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
+      armarFranjas(categorias.filter((c) => !vaArriba(c) && !vaAparte(c)), colorDe)
         .forEach((franja) => contenedor.appendChild(renderFranja(franja)));
       categorias.filter(vaAparte)
         .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));

@@ -334,7 +334,7 @@
     return { inicios: out, cierres, todoElDia: /HASTA|TODO EL D[IÍ]A|\b24\s*HS/.test(t) };
   }
 
-  // Está abierta "todo el día" si lo dice el horario, si no tiene hora de
+  // Está abierta toda la tarde si lo dice el horario, si no tiene hora de
   // inicio pero sí de cierre ("HASTA 20 HS"), o si abre a las 14 (o antes)
   // y cierra a las 19 o más tarde ("14 A 19.00 HS").
   const CIERRE_TODO_EL_DIA = 19 * 60;
@@ -367,13 +367,13 @@
       franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
     const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
-    const todoElDia = { nombre: "Todo el día", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const todoElDia = { nombre: "Toda la tarde", color: COLOR_FRANJA, items: [], claves: new Map() };
 
     categorias.forEach((categoria) => {
       const color = colorDe(categoria);
       categoria.items.forEach((item) => {
         const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
-        // Lo que está abierto todo el día va en su propia pestaña; si además
+        // Lo que está abierto toda la tarde va en su propia pestaña; si además
         // tiene actividades con hora puntual, esas siguen en su franja.
         let minutos = [];
         let abiertoTodoElDia = false;

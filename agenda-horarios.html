@@ -347,15 +347,15 @@
   // está abierto a las 14 (o empieza antes) va en la primera franja; lo que
   // empieza a las 21 o más tarde, en la última. Si un mismo lugar figura en
   // varias categorías, aparece una sola vez por franja.
-  function armarFranjas(categorias) {
+  function armarFranjas(categorias, colorDe) {
     const franjas = [];
     for (let h = PRIMERA_HORA; h <= ULTIMA_HORA; h++) {
       franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
     const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
 
-    categorias.forEach((categoria, i) => {
-      const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length];
+    categorias.forEach((categoria) => {
+      const color = colorDe(categoria);
       categoria.items.forEach((item) => {
         const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
         let minutos = [];
@@ -453,17 +453,31 @@
     return location.hash === "#categorias" ? "categorias" : "horario";
   }
 
+  // En la vista por horario, estas categorías no van en las franjas sino
+  // abajo, como desplegables por categoría (se comparan sin tildes ni comillas).
+  const CATEGORIAS_APARTE = ["gastronom", "cafe", "chaca y vino"];
+
+  function vaAparte(categoria) {
+    const nombre = normalizar(categoria.nombre);
+    return CATEGORIAS_APARTE.some((clave) => nombre.includes(clave));
+  }
+
   function renderAgenda(categorias) {
     const vista = vistaActual();
     botonesVista.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.vista === vista)));
 
+    // El color de cada categoría sale de su orden en la planilla, igual en las dos vistas.
+    const colores = new Map(categorias.map((c, i) => [c, CATEGORY_COLORS[i % CATEGORY_COLORS.length]]));
+    const colorDe = (categoria) => colores.get(categoria);
+
     contenedor.innerHTML = "";
     if (vista === "categorias") {
-      categorias.forEach((categoria, i) => {
-        contenedor.appendChild(renderCategoria(categoria, CATEGORY_COLORS[i % CATEGORY_COLORS.length]));
-      });
+      categorias.forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
     } else {
-      armarFranjas(categorias).forEach((franja) => contenedor.appendChild(renderFranja(franja)));
+      armarFranjas(categorias.filter((c) => !vaAparte(c)), colorDe)
+        .forEach((franja) => contenedor.appendChild(renderFranja(franja)));
+      categorias.filter(vaAparte)
+        .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
     }
 
     // Al abrir un desplegable, cierra los demás.

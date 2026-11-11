@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/agenda.css?v=20">
+<link rel="stylesheet" href="css/agenda.css?v=21">
 </head>
 <body>
 
@@ -112,6 +112,9 @@
     return node;
   }
 
+  // Proporción del recuadro de la foto (16:10, igual que en el CSS).
+  const PROPORCION_CAJA = 16 / 10;
+
   function sinFoto(media, color) {
     media.classList.add("nota__media--vacia");
     media.style.background = color;
@@ -125,6 +128,13 @@
     if (imagen) {
       const img = el("img", { src: imagen, alt: "", loading: "lazy", referrerpolicy: "no-referrer" });
       img.addEventListener("error", () => sinFoto(media, color));
+      // Si la proporción de la imagen es muy distinta a la del recuadro
+      // (un logo ancho, un afiche vertical), se muestra entera en vez de
+      // recortarla para llenarlo.
+      img.addEventListener("load", () => {
+        const proporcion = img.naturalWidth / img.naturalHeight;
+        if (Math.abs(Math.log(proporcion / PROPORCION_CAJA)) > Math.log(1.5)) media.classList.add("nota__media--entera");
+      });
       media.appendChild(img);
     } else {
       sinFoto(media, color);

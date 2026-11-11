@@ -258,6 +258,17 @@ body {
   text-transform: uppercase;
 }
 
+.nota__descripcion {
+  font-family: Arial, sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--texto);
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .nota__leer {
   font-weight: 600;
   font-size: 0.85rem;

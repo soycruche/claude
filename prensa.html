@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/agenda.css?v=21">
+<link rel="stylesheet" href="css/agenda.css?v=22">
 </head>
 <body>
 
@@ -76,7 +76,8 @@
   const contenedor = document.getElementById("prensa-contenido");
 
   // Las notas se cargan en la pestaña "Prensa" de la misma planilla de la
-  // agenda, con las columnas: titulo, link, imagen (la imagen es opcional).
+  // agenda, con las columnas: titulo, descripcion, link, imagen (la
+  // descripción y la imagen son opcionales).
   // Planilla: https://docs.google.com/spreadsheets/d/1oLdtQzdmme7pPJ-NBG_-6BhbpjC6SOH_eI6HRoOpJtk/edit
   const PESTANIA = "Prensa";
   const SHEET_CSV_URL =
@@ -141,6 +142,7 @@
     }
     const texto = el("span", { class: "nota__texto" }, [
       el("span", { class: "nota__titulo", text: nota.titulo }),
+      nota.descripcion ? el("span", { class: "nota__descripcion", text: nota.descripcion }) : null,
       el("span", { class: "nota__leer", text: "Leer nota" }),
     ]);
     return el("a", { class: "nota", href: nota.link, target: "_blank", rel: "noopener" }, [media, texto]);
@@ -156,7 +158,12 @@
     .then((csv) => {
       const filas = Papa.parse(csv, { header: true, skipEmptyLines: true, transformHeader: clave }).data;
       const notas = filas
-        .map((f) => ({ titulo: (f.titulo || "").trim(), link: (f.link || "").trim(), imagen: f.imagen }))
+        .map((f) => ({
+          titulo: (f.titulo || "").trim(),
+          descripcion: (f.descripcion || "").trim(),
+          link: (f.link || "").trim(),
+          imagen: f.imagen,
+        }))
         .filter((n) => n.titulo && /^https?:\/\//i.test(n.link));
       contenedor.innerHTML = "";
       if (!notas.length) {

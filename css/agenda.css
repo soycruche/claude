@@ -85,18 +85,36 @@ body {
 }
 
 .agenda__menu .agenda__mapa {
+  height: 43px;
   background: transparent;
   color: var(--texto);
   font-size: calc(0.95rem - 2pt);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.agenda__menu .agenda-social__btn {
+.agenda__menu .agenda-social .agenda-social__btn {
+  width: 43px;
+  height: 43px;
   background: transparent;
   border: 2px solid var(--texto);
+  transition: background-color 0.15s ease;
 }
 
 .agenda__menu .agenda-social__btn svg {
   fill: var(--texto);
+  transition: fill 0.15s ease;
+}
+
+/* Hover invertido: fondo negro y letra/ícono blancos */
+.agenda__menu .agenda__mapa:hover,
+.agenda__menu .agenda-social__btn:hover {
+  opacity: 1;
+  background: var(--texto);
+  color: #fff;
+}
+
+.agenda__menu .agenda-social__btn:hover svg {
+  fill: #fff;
 }
 
 /* Redes en la misma fila que los botones (página de prensa) */

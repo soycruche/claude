@@ -78,7 +78,7 @@ body {
 .agenda__menu {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
   margin: 0 auto 20px;

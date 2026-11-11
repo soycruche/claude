@@ -73,10 +73,37 @@ body {
 
 .agenda__mapa:hover { opacity: 0.8; }
 
+/* Menú arriba del header (página de prensa): mismos botones, pero con
+   borde negro, fondo transparente y letra 2pt más chica. */
+.agenda__menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto 20px;
+}
+
+.agenda__menu .agenda__mapa {
+  background: transparent;
+  color: var(--texto);
+  font-size: calc(0.95rem - 2pt);
+}
+
+.agenda__menu .agenda-social__btn {
+  background: transparent;
+  border: 2px solid var(--texto);
+}
+
+.agenda__menu .agenda-social__btn svg {
+  fill: var(--texto);
+}
+
 /* Redes en la misma fila que los botones (página de prensa) */
-.agenda__controles .agenda-social--en-linea {
+.agenda__controles .agenda-social--en-linea,
+.agenda__menu .agenda-social--en-linea {
   margin: 0;
-  gap: 12px;
+  gap: 10px;
 }
 
 .agenda-social--en-linea .agenda-social__btn {

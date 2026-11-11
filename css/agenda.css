@@ -73,11 +73,6 @@ body {
 
 .agenda__mapa:hover { opacity: 0.8; }
 
-.agenda__mapa--claro {
-  background: #fff;
-  color: var(--texto);
-}
-
 /* Redes en la misma fila que los botones (página de prensa) */
 .agenda__controles .agenda-social--en-linea {
   margin: 0;

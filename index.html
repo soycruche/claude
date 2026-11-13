@@ -329,38 +329,41 @@
     return categorias;
   }
 
-  // Horas de inicio (en minutos) de un horario libre. Las horas que vienen
-  // después de "A" o "HASTA" son de cierre, no de inicio: "16.00 A 18.00 HS"
-  // empieza a las 16; "14.00 16.00 y 18.00 HS" empieza a las 14, 16 y 18.
-  // "todoElDia" marca horarios sin inicio que igual están abiertos desde que
-  // arranca el festival ("HASTA 20 HS", "TODO EL DIA").
-  function inicios(horario) {
+  // Tramos de un horario libre, en minutos. "15.00 A 19.00 HS" es un rango
+  // de 15 a 19; "HASTA LAS 20 HS" va desde que arranca el festival hasta las
+  // 20; "TODO EL DIA" o "24 HS", todo el festival. Las horas sueltas
+  // ("16.00 Y 17.00 HS") son inicios sin cierre. Un cierre de madrugada
+  // ("19.00 A 02.00 HS") cuenta como del día siguiente.
+  const MEDIANOCHE = 24 * 60;
+
+  function tramos(horario) {
     const t = (horario || "").toUpperCase();
+    if (/TODO EL D[IÍ]A|\b24\s*HS/.test(t)) {
+      return { rangos: [[PRIMERA_HORA * 60, MEDIANOCHE]], inicios: [] };
+    }
     const re = /(HASTA(?:\s+LAS)?\s+|\bA\s+)?(\d{1,2})(?:[.:](\d{2}))?/g;
-    const out = [];
-    const cierres = [];
+    const rangos = [];
+    const sueltos = [];
+    let pendiente = null;
     let m;
     while ((m = re.exec(t))) {
       const hh = parseInt(m[2], 10);
       const mm = m[3] ? parseInt(m[3], 10) : 0;
       if (hh > 23 || mm > 59) continue;
-      (m[1] ? cierres : out).push(hh * 60 + mm);
+      let min = hh * 60 + mm;
+      if (!m[1]) {
+        if (pendiente !== null) sueltos.push(pendiente);
+        pendiente = min;
+      } else {
+        const desde = pendiente !== null ? pendiente : PRIMERA_HORA * 60;
+        if (min <= desde && min < 6 * 60) min += MEDIANOCHE;
+        if (min > desde) rangos.push([desde, min]);
+        else sueltos.push(desde);
+        pendiente = null;
+      }
     }
-    return { inicios: out, cierres, todoElDia: /HASTA|TODO EL D[IÍ]A|\b24\s*HS/.test(t) };
-  }
-
-  // Está abierta toda la tarde si lo dice el horario, si no tiene hora de
-  // inicio pero sí de cierre ("HASTA 20 HS"), o si abre a las 14 (o antes)
-  // y cierra a las 19 o más tarde ("14 A 19.00 HS").
-  const CIERRE_TODO_EL_DIA = 19 * 60;
-
-  function esTodoElDia(horario) {
-    const t = (horario || "").toUpperCase();
-    if (/TODO EL D[IÍ]A|\b24\s*HS/.test(t)) return true;
-    const r = inicios(horario);
-    if (!r.inicios.length) return r.todoElDia;
-    return Math.min(...r.inicios) <= PRIMERA_HORA * 60 &&
-      r.cierres.length > 0 && Math.max(...r.cierres) >= CIERRE_TODO_EL_DIA;
+    if (pendiente !== null) sueltos.push(pendiente);
+    return { rangos, inicios: sueltos.concat(rangos.map((r) => r[0])) };
   }
 
   function normalizar(texto) {
@@ -372,38 +375,50 @@
     return String(hora).padStart(2, "0") + ".00 HS";
   }
 
-  // Reparte los items de todas las categorías en franjas horarias. Lo que ya
-  // está abierto a las 14 (o empieza antes) va en la primera franja; lo que
-  // empieza a las 21 o más tarde, en la última. Si un mismo lugar figura en
-  // varias categorías, aparece una sola vez por franja.
-  function armarFranjas(categorias, colorDe) {
+  // Lo que abre a las 14 (o antes) y cierra a las 19 o más tarde también va
+  // en la pestaña "Horario de corrido".
+  const CIERRE_DE_CORRIDO = 19 * 60;
+
+  // Reparte los items de todas las categorías en franjas horarias. Lo que
+  // tiene un rango ("15.00 A 19.00 HS") aparece en cada hora en la que está
+  // ocurriendo (15, 16, 17 y 18), salvo en las categorías que no se repiten,
+  // donde va solo en la hora de inicio. Lo que empieza antes de las 14 va en
+  // la primera franja; lo que empieza a las 21 o más tarde, en la última. Si
+  // un mismo lugar figura en varias categorías, aparece una sola vez por franja.
+  function armarFranjas(categorias, colorDe, seRepite) {
     const franjas = [];
     for (let h = PRIMERA_HORA; h <= ULTIMA_HORA; h++) {
       franjas.push({ nombre: nombreFranja(h), color: COLOR_FRANJA, items: [], claves: new Map() });
     }
     const aConfirmar = { nombre: "Horario a confirmar", color: COLOR_FRANJA, items: [], claves: new Map() };
-    const todoElDia = { nombre: "14 a 20 hs. Horario de corrido", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const deCorrido = { nombre: "14 a 20 hs. Horario de corrido", color: COLOR_FRANJA, items: [], claves: new Map() };
+    const franjaDe = (hora) => franjas[Math.min(Math.max(hora, PRIMERA_HORA), ULTIMA_HORA) - PRIMERA_HORA];
 
     categorias.forEach((categoria, ordenCategoria) => {
       const color = colorDe(categoria);
+      const repetir = seRepite(categoria);
       categoria.items.forEach((item) => {
         const horarios = item.actividades ? item.actividades.map((a) => a.horario) : [item.horario];
-        // Lo que está abierto toda la tarde va en su propia pestaña; si además
-        // tiene actividades con hora puntual, esas siguen en su franja.
-        let minutos = [];
-        let abiertoTodoElDia = false;
-        horarios.forEach((h) => {
-          if (esTodoElDia(h)) abiertoTodoElDia = true;
-          else minutos = minutos.concat(inicios(h).inicios);
-        });
-
         const destinos = new Map();
-        if (abiertoTodoElDia) destinos.set(todoElDia, 0);
-        minutos.forEach((min) => {
-          const hora = Math.min(Math.max(Math.floor(min / 60), PRIMERA_HORA), ULTIMA_HORA);
-          const franja = franjas[hora - PRIMERA_HORA];
-          const orden = Math.max(min, PRIMERA_HORA * 60);
+        const agregar = (franja, orden) => {
           if (!destinos.has(franja) || orden < destinos.get(franja)) destinos.set(franja, orden);
+        };
+
+        horarios.forEach((h) => {
+          const r = tramos(h);
+          if (r.rangos.some(([desde, hasta]) => desde <= PRIMERA_HORA * 60 && hasta >= CIERRE_DE_CORRIDO)) {
+            agregar(deCorrido, 0);
+          }
+          if (repetir) {
+            r.rangos.forEach(([desde, hasta]) => {
+              const primera = Math.max(Math.floor(desde / 60), PRIMERA_HORA);
+              const ultima = Math.min(Math.ceil(hasta / 60) - 1, ULTIMA_HORA);
+              for (let hora = primera; hora <= ultima; hora++) agregar(franjaDe(hora), Math.max(desde, hora * 60));
+            });
+            r.inicios.forEach((min) => agregar(franjaDe(Math.floor(min / 60)), Math.max(min, PRIMERA_HORA * 60)));
+          } else {
+            r.inicios.forEach((min) => agregar(franjaDe(Math.floor(min / 60)), Math.max(min, PRIMERA_HORA * 60)));
+          }
         });
         if (!destinos.size) destinos.set(aConfirmar, 0);
 
@@ -421,7 +436,7 @@
       });
     });
 
-    const todas = [todoElDia].concat(franjas, [aConfirmar]).filter((f) => f.items.length);
+    const todas = [deCorrido].concat(franjas, [aConfirmar]).filter((f) => f.items.length);
     // Dentro de cada pestaña: agrupado por categoría (en el orden de la
     // planilla) y, dentro de cada categoría, por hora de inicio.
     todas.forEach((f) => {
@@ -492,6 +507,9 @@
   // Espacio Central va primero, tal cual como en la vista por categoría.
   const CATEGORIAS_ARRIBA = ["espacio central"];
   const CATEGORIAS_APARTE = ["gastronom", "cafe", "chaca y vino"];
+  // En la vista por horario, estas categorías no repiten sus actividades en
+  // cada hora del rango: van solo en la hora de inicio.
+  const CATEGORIAS_SIN_REPETIR = ["visitas guiadas"];
 
   function coincide(categoria, claves) {
     const nombre = normalizar(categoria.nombre);
@@ -500,6 +518,7 @@
 
   const vaArriba = (categoria) => coincide(categoria, CATEGORIAS_ARRIBA);
   const vaAparte = (categoria) => coincide(categoria, CATEGORIAS_APARTE);
+  const seRepite = (categoria) => !coincide(categoria, CATEGORIAS_SIN_REPETIR);
 
   function renderAgenda(categorias) {
     const vista = vistaActual();
@@ -515,7 +534,7 @@
     } else {
       categorias.filter(vaArriba)
         .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
-      armarFranjas(categorias.filter((c) => !vaArriba(c) && !vaAparte(c)), colorDe)
+      armarFranjas(categorias.filter((c) => !vaArriba(c) && !vaAparte(c)), colorDe, seRepite)
         .forEach((franja) => contenedor.appendChild(renderFranja(franja)));
       categorias.filter(vaAparte)
         .forEach((categoria) => contenedor.appendChild(renderCategoria(categoria, colorDe(categoria))));
